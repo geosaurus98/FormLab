@@ -58,18 +58,18 @@ export function Bars({ data, xKey, series, height = 200, refY, refLabel, stacked
   );
 }
 
-export function BarsWithLine({ data, xKey, bar, line, height = 220 }: { data: Record<string, unknown>[]; xKey: string; bar: SeriesDef; line: SeriesDef; height?: number }) {
+export function BarsWithLine({ data, xKey, bar, line, height = 220, sharedAxis = false }: { data: Record<string, unknown>[]; xKey: string; bar: SeriesDef; line: SeriesDef; height?: number; sharedAxis?: boolean }) {
   return (
     <ResponsiveContainer width="100%" height={height}>
       <ComposedChart data={data} margin={{ top: 8, right: 0, bottom: 0, left: -12 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false} />
         <XAxis dataKey={xKey} tick={axis} tickLine={false} axisLine={false} minTickGap={12} />
         <YAxis yAxisId="l" tick={axis} tickLine={false} axisLine={false} width={52} />
-        <YAxis yAxisId="r" orientation="right" tick={axis} tickLine={false} axisLine={false} width={44} domain={['auto', 'auto']} />
+        {!sharedAxis && <YAxis yAxisId="r" orientation="right" tick={axis} tickLine={false} axisLine={false} width={44} domain={['auto', 'auto']} />}
         <Tooltip contentStyle={{ borderRadius: 8, fontSize: 12 }} />
         <Legend wrapperStyle={{ fontSize: 12 }} />
         <Bar yAxisId="l" dataKey={bar.key} name={bar.label} fill={bar.color} radius={[3, 3, 0, 0]} isAnimationActive={false} />
-        <Line yAxisId="r" dataKey={line.key} name={line.label} stroke={line.color} strokeWidth={2} dot={{ r: 3 }} connectNulls isAnimationActive={false} />
+        <Line yAxisId={sharedAxis ? 'l' : 'r'} type={sharedAxis ? 'stepAfter' : 'monotone'} dataKey={line.key} name={line.label} stroke={line.color} strokeWidth={2} strokeDasharray={sharedAxis ? '5 4' : undefined} dot={sharedAxis ? false : { r: 3 }} connectNulls isAnimationActive={false} />
       </ComposedChart>
     </ResponsiveContainer>
   );

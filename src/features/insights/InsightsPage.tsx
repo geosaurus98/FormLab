@@ -3,8 +3,12 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../../db/db';
 import { Card, CardTitle, PageHeader, Select, Notice, Badge } from '../../components/ui';
 import { Bars, BarsWithLine, InsufficientData, SERIES, shortDate } from '../../components/charts';
-import { usePrefs, useToday } from '../../hooks/data';
-import { aggregateDays, averageOf, compareGroups, describeCorrelation, kcalAdherence, nutritionDays, pearson, proteinAdherence, sessionsPerWeek, topFoods, weeklyIntakeVsWeight } from '../../domain/insights/insights';
+import { useNutritionLookup, usePrefs, useToday } from '../../hooks/data';
+import { Link } from 'react-router-dom';
+import { calculateRecipeNutrition } from '../../domain/recipes/nutrition';
+import { estimateRecipeCost } from '../../domain/recipes/shopping';
+import { formatNZD } from '../../lib/utils';
+import { aggregateDays, averageOf, macroDistribution, recipeUsage, compareGroups, describeCorrelation, kcalAdherence, nutritionDays, pearson, proteinAdherence, sessionsPerWeek, topFoods, weeklyIntakeVsWeight } from '../../domain/insights/insights';
 import { dailyWeights, weightTrend } from '../../domain/body/body';
 import { exerciseProgress } from '../../domain/workouts/records';
 import { sessionComparisonKey } from '../../domain/workouts/session';
@@ -41,6 +45,7 @@ export function InsightsPage() {
   const kcal = averageOf(nDays, 'kcal', days);
   const protein = averageOf(nDays, 'proteinG', days);
   const pAdh = proteinAdherence(nDays);
+  const macros = macroDistribution(nDays);
   const kAdh = kcalAdherence(nDays);
   const trainVsRest = compareGroups(nDays, (d) => d.trained, (d) => d.kcal, ['Training days', 'Rest days']);
   const trainVsRestP = compareGroups(nDays, (d) => d.trained, (d) => d.proteinG, ['Training days', 'Rest days']);
@@ -171,13 +176,46 @@ export function InsightsPage() {
       </div>
 
       <Card>
-        <CardTitle>Daily energy and protein</CardTitle>
+        <CardTitle>Energy vs target by day</CardTitle>
         {logged >= 3 ? (
-          <BarsWithLine data={all.map((d) => ({ date: shortDate(d.date), kcal: d.kcal != null ? Math.round(d.kcal) : null, protein: d.proteinG != null ? Math.round(d.proteinG) : null }))} xKey="date" bar={{ key: 'kcal', label: 'Energy (kcal)', color: SERIES.tertiary }} line={{ key: 'protein', label: 'Protein (g)', color: SERIES.secondary }} />
+          <BarsWithLine data={all.map((d) => ({ date: shortDate(d.date), kcal: d.kcal != null ? Math.round(d.kcal) : null, target: d.kcalTarget }))} xKey="date" bar={{ key: 'kcal', label: 'Energy (kcal)', color: SERIES.tertiary }} line={{ key: 'target', label: 'Target', color: SERIES.muted }} sharedAxis />
         ) : (
           <InsufficientData>Log food on at least 3 days.</InsufficientData>
         )}
       </Card>
+
+      <Card>
+        <CardTitle>Protein vs target by day</CardTitle>
+        {logged >= 3 ? (
+          <BarsWithLine data={all.map((d) => ({ date: shortDate(d.date), protein: d.proteinG != null ? Math.round(d.proteinG) : null, target: d.proteinTarget }))} xKey="date" bar={{ key: 'protein', label: 'Protein (g)', color: SERIES.secondary }} line={{ key: 'target', label: 'Target', color: SERIES.muted }} sharedAxis />
+        ) : (
+          <InsufficientData>Log food on at least 3 days.</InsufficientData>
+        )}
+        <p className="mt-2 text-xs text-slate-500">Days without entries are left blank, not counted as zero. Days with unknown values are lower-bound totals.</p>
+      </Card>
+
+      <Card>
+        <CardTitle>Macronutrient distribution</CardTitle>
+        {macros && macros.n >= 3 ? (
+          <>
+            <div className="flex h-6 w-full overflow-hidden rounded-full text-[11px] font-semibold text-white" role="img" aria-label={`Protein ${Math.round(macros.proteinPct)}%, carbohydrate ${Math.round(macros.carbsPct)}%, fat ${Math.round(macros.fatPct)}%`}>
+              <div style={{ width: `${macros.proteinPct}%`, background: SERIES.secondary }} className="flex items-center justify-center">{Math.round(macros.proteinPct)}%</div>
+              <div style={{ width: `${macros.carbsPct}%`, background: SERIES.tertiary }} className="flex items-center justify-center">{Math.round(macros.carbsPct)}%</div>
+              <div style={{ width: `${macros.fatPct}%`, background: SERIES.primary }} className="flex items-center justify-center">{Math.round(macros.fatPct)}%</div>
+            </div>
+            <div className="mt-2 flex flex-wrap gap-3 text-xs text-slate-600 dark:text-slate-300">
+              <span><span className="mr-1 inline-block h-2 w-2 rounded-full" style={{ background: SERIES.secondary }} />Protein</span>
+              <span><span className="mr-1 inline-block h-2 w-2 rounded-full" style={{ background: SERIES.tertiary }} />Carbohydrate</span>
+              <span><span className="mr-1 inline-block h-2 w-2 rounded-full" style={{ background: SERIES.primary }} />Fat</span>
+              <span className="text-slate-500">Average share of energy from macros (4/4/9 kcal/g), n = {macros.n} days with all three known.</span>
+            </div>
+          </>
+        ) : (
+          <InsufficientData height={80}>Needs at least 3 logged days with protein, carbohydrate and fat known.</InsufficientData>
+        )}
+      </Card>
+
+      <RecipeComparison entries={entries} />
 
       <Card>
         <CardTitle>Energy intake vs weight change (weekly)</CardTitle>
@@ -211,4 +249,68 @@ function useMemoImproving(workouts: import('../../domain/workouts/types').Workou
     }
     return out.sort((a, b) => b.change - a.change);
   }, [workouts, start]);
+}
+
+function RecipeComparison({ entries }: { entries: import('../../domain/nutrition/diary').FoodLogEntry[] }) {
+  const recipes = useLiveQuery(() => db.recipes.filter((r) => !r.archived).toArray(), []);
+  const versions = useLiveQuery(() => db.recipeVersions.toArray(), []);
+  const lookup = useNutritionLookup();
+  const [sort, setSort] = useState<'protein' | 'density' | 'kcal' | 'cost' | 'logged'>('density');
+  const rows = useMemo(() => {
+    if (!recipes || !versions || !lookup) return [];
+    const usage = recipeUsage(entries);
+    const vmap = new Map(versions.map((v) => [v.id, v]));
+    return recipes
+      .map((r) => {
+        const v = vmap.get(r.currentVersionId);
+        if (!v) return null;
+        const n = calculateRecipeNutrition(v, lookup);
+        const cost = estimateRecipeCost(v, lookup.ingredients);
+        const kcal = n.perServing.energyKcal;
+        const protein = n.perServing.proteinG;
+        return { r, kcal, protein, density: kcal && protein != null ? (protein / kcal) * 100 : null, satFat: n.perServing.satFatG, cost: cost.total > 0 ? cost.perServing : null, costPartial: cost.unpriced.length > 0, complete: n.complete, logged: usage.get(r.id)?.servingsLogged ?? 0 };
+      })
+      .filter((x): x is NonNullable<typeof x> => x != null)
+      .sort((a, b) => (sort === 'cost' ? (a.cost ?? 1e9) - (b.cost ?? 1e9) : sort === 'kcal' ? (a.kcal ?? 1e9) - (b.kcal ?? 1e9) : (b[sort] ?? -1) - (a[sort] ?? -1)));
+  }, [recipes, versions, lookup, entries, sort]);
+  if (!rows.length) return null;
+  const th = (key: typeof sort, label: string) => (
+    <th className="px-1 text-right">
+      <button className={sort === key ? 'font-semibold text-brand-700' : ''} onClick={() => setSort(key)}>{label}</button>
+    </th>
+  );
+  return (
+    <Card>
+      <CardTitle>Recipe nutrition comparison (per serving)</CardTitle>
+      <div className="-mx-4 overflow-x-auto px-4">
+        <table className="w-full min-w-[34rem] text-sm tabular-nums">
+          <thead>
+            <tr className="text-xs text-slate-500">
+              <th className="text-left">Recipe</th>
+              {th('kcal', 'kcal')}
+              {th('protein', 'Protein')}
+              {th('density', 'P / 100 kcal')}
+              <th className="px-1 text-right">Sat fat</th>
+              {th('cost', 'Cost')}
+              {th('logged', 'Eaten (period)')}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((x) => (
+              <tr key={x.r.id} className="border-t border-slate-100 dark:border-slate-800">
+                <td className="py-1.5 pr-2"><Link to={`/recipes/${x.r.id}`} className="hover:underline">{x.r.name}</Link>{!x.complete && <span className="ml-1 text-amber-600" title="Incomplete nutrition">⚠</span>}</td>
+                <td className="px-1 text-right">{x.kcal != null ? Math.round(x.kcal) : '?'}</td>
+                <td className="px-1 text-right">{x.protein != null ? `${Math.round(x.protein)} g` : '?'}</td>
+                <td className="px-1 text-right">{x.density != null ? `${x.density.toFixed(1)} g` : '?'}</td>
+                <td className="px-1 text-right">{x.satFat != null ? `${x.satFat.toFixed(1)} g` : '?'}</td>
+                <td className="px-1 text-right">{x.cost != null ? `${formatNZD(x.cost)}${x.costPartial ? '+' : ''}` : '—'}</td>
+                <td className="px-1 text-right">{x.logged ? `${x.logged} serv.` : '—'}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p className="mt-2 text-xs text-slate-500">Current version of each recipe. "+" means some ingredients have no price. ⚠ means nutrition is incomplete.</p>
+    </Card>
+  );
 }

@@ -1,11 +1,12 @@
 import { z } from 'zod';
-import { db, SCHEMA_VERSION, TABLE_NAMES, type TableName } from './db';
+import { db, SCHEMA_VERSION, TABLE_NAMES, upgradePreferencesV2, type TableName } from './db';
 import { FoodSchema } from '../domain/nutrition/foods';
 import { FoodLogEntrySchema } from '../domain/nutrition/diary';
 import { RecipeSchema, RecipeVersionSchema, IngredientSchema } from '../domain/recipes/types';
 import { WorkoutSessionSchema, ExerciseSchema, WorkoutTemplateSchema, CardioActivitySchema } from '../domain/workouts/types';
 import { BodyMeasurementSchema } from '../domain/body/body';
 import { MealPlanSchema } from '../domain/planner/mealPlan';
+import { PreferencesSchema } from '../domain/shared/preferences';
 import { newId } from '../lib/id';
 import { nowIso } from '../lib/utils';
 
@@ -31,7 +32,8 @@ const STRICT: Partial<Record<TableName, z.ZodTypeAny>> = {
   templates: WorkoutTemplateSchema,
   cardio: CardioActivitySchema,
   body: BodyMeasurementSchema,
-  mealPlans: MealPlanSchema
+  mealPlans: MealPlanSchema,
+  preferences: PreferencesSchema
 };
 
 const BackupShape = z.object({
@@ -53,7 +55,14 @@ export async function exportBackup(): Promise<Backup> {
 /** Migrates older backup payloads to the current schema. Add a case for each schema bump. */
 export function migrateBackup(b: Backup): Backup {
   let cur = b;
-  // if (cur.schemaVersion === 1) { cur = { ...cur, schemaVersion: 2, tables: { ...cur.tables, foods: cur.tables.foods?.map(...) } }; }
+  if (cur.schemaVersion === 1) {
+    const prefs = (cur.tables.preferences ?? []).map((row) => {
+      const copy = { ...(row as Record<string, unknown>) };
+      upgradePreferencesV2(copy);
+      return copy;
+    });
+    cur = { ...cur, schemaVersion: 2, tables: { ...cur.tables, preferences: prefs } };
+  }
   if (cur.schemaVersion > SCHEMA_VERSION) throw new Error(`Backup was made by a newer version of FormLab (schema ${cur.schemaVersion}). Update the app first.`);
   return cur;
 }

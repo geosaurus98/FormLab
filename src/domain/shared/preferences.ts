@@ -50,6 +50,9 @@ export const PreferencesSchema = z.object({
   maxSatFatPerServingG: z.number().nonnegative().nullable(),
   addExerciseEnergy: z.boolean(),
   defaultRestSec: z.number().int().nonnegative(),
+  /** minimum hours before training the same primary muscle again (user preference, not a physiological measurement) */
+  recoveryDefaultHours: z.number().nonnegative(),
+  recoveryOverrides: z.record(z.string(), z.number().nonnegative()),
   defaultGymId: z.string().nullable(),
   restTimerSound: z.boolean(),
   restTimerNotifications: z.boolean(),
@@ -86,6 +89,8 @@ export function defaultPreferences(now: string): Preferences {
     maxSatFatPerServingG: 8,
     addExerciseEnergy: false,
     defaultRestSec: 90,
+    recoveryDefaultHours: 48,
+    recoveryOverrides: {},
     defaultGymId: null,
     restTimerSound: true,
     restTimerNotifications: false,

@@ -228,3 +228,26 @@ test('recipe lab: create an experiment without changing the original', async ({ 
   await page.goto('/recipes/rec_ip_chicken_curry');
   await expect(page.getByText('20 g', { exact: true })).toBeVisible();
 });
+
+test('training recommendation fits the available time and starts a workout', async ({ page }) => {
+  await page.goto('/workouts');
+  await page.getByRole('button', { name: 'Add example programmes' }).click();
+  await expect(page.getByText('Recommended today')).toBeVisible();
+  await page.getByRole('button', { name: '30 min' }).click();
+  // The recommended option must fit the time: either a template that already fits, or a trimmed one.
+  const estimate = page.getByTestId('rec-estimate');
+  await expect(estimate).toBeVisible();
+  expect(Number(await estimate.getAttribute('data-minutes'))).toBeLessThanOrEqual(30);
+  // Shorter still: 30 min is tight enough that nothing should exceed it
+  await page.getByRole('button', { name: 'Any time' }).click();
+  expect(Number(await estimate.getAttribute('data-minutes'))).toBeGreaterThan(0);
+  await page.getByRole('button', { name: '30 min' }).click();
+  await page.getByRole('button', { name: /^Start recommended/ }).click();
+  await expect(page).toHaveURL(/workouts\/active/);
+  await expect(page.getByRole('button', { name: 'Complete set 1' }).first()).toBeVisible();
+  // clean up so later runs start without an active workout
+  await page.getByRole('button', { name: 'Workout options' }).click();
+  page.once('dialog', (d) => void d.accept());
+  await page.getByRole('button', { name: 'Discard workout' }).click();
+  await expect(page).toHaveURL(/\/workouts$/);
+});

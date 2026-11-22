@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest';
 import { changeOverRange, dailyWeights, goalProgress, rollingAverage, weightTrend, type BodyMeasurement } from './body';
 import { kgToLb, lbToKg, displayMass } from '../../lib/units';
 import { addDays } from '../../lib/dates';
-import { aggregateDays, compareGroups, pearson, proteinAdherence, sessionsPerWeek } from '../insights/insights';
+import { aggregateDays, compareGroups, macroDistribution, pearson, proteinAdherence, recipeUsage, sessionsPerWeek, type DayAggregate } from '../insights/insights';
+import type { FoodLogEntry } from '../nutrition/diary';
 
 const m = (date: string, kg: number): BodyMeasurement => ({ id: date + kg, date, time: null, weightKg: kg, waistCm: null, measurements: {}, notes: '', quality: 'measured', createdAt: date });
 
@@ -58,5 +59,23 @@ describe('insights', () => {
     expect(cmp.enoughData).toBe(false);
     expect(proteinAdherence(days).rate).toBeNull();
     expect(sessionsPerWeek([], '2026-01-01', '2026-01-31').length).toBeGreaterThanOrEqual(5);
+  });
+});
+
+describe('nutrition analytics', () => {
+  const day = (p: number | null, c: number | null, f: number | null) => ({ proteinG: p, carbsG: c, fatG: f }) as DayAggregate;
+  it('computes average macro energy shares over days with complete macros', () => {
+    const d = macroDistribution([day(100, 200, 50), day(150, 150, 60), day(null, 100, 10)])!;
+    expect(d.n).toBe(2);
+    expect(d.proteinPct + d.carbsPct + d.fatPct).toBeCloseTo(100);
+    // day 1: 400/1650, day 2: 600/1740
+    expect(d.proteinPct).toBeCloseTo(((400 / 1650 + 600 / 1740) / 2) * 100, 5);
+    expect(macroDistribution([day(null, null, null)])).toBeNull();
+  });
+  it('counts recipe usage from diary entries', () => {
+    const e = (recipeId: string, servings: number) => ({ origin: { type: 'recipe', recipeId, recipeVersionId: 'v', versionNumber: 1, servings } }) as FoodLogEntry;
+    const u = recipeUsage([e('a', 1), e('a', 1.5), e('b', 1), { origin: { type: 'quick' } } as FoodLogEntry]);
+    expect(u.get('a')).toEqual({ recipeId: 'a', servingsLogged: 2.5, timesLogged: 2 });
+    expect(u.size).toBe(2);
   });
 });

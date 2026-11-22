@@ -56,6 +56,10 @@ The three modules share entities but stay independently maintainable:
 | Single active workout at a time | Avoids confusing parallel sessions |
 | Validation status updated in place | It's metadata about a version (e.g. "I tested this"), not cookable content |
 
+## Bundles
+
+Home, the food diary and add-food flow, and the workout screens are in the main bundle, so the most frequent actions open instantly. All other screens load lazily via `React.lazy` with a `Suspense` fallback in `Layout`. Vendor code is split into `react`, `data` (Dexie, Zod) and `charts` (Recharts) chunks. The service worker precaches every chunk, so lazy loading doesn't affect offline use.
+
 ## Offline and PWA
 
 `vite-plugin-pwa` precaches the whole built app (`generateSW`, `navigateFallback: index.html`). Every feature runs on IndexedDB, so nothing needs a network connection. Updates use a *prompt* strategy (`UpdatePrompt`), so a new version never reloads mid-workout. There are no network operations to queue, because there are no remote calls. Future integrations should use the adapter interfaces below and record results with an `ImportRecord`.

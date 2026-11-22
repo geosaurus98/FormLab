@@ -25,7 +25,7 @@ export interface MetaRow {
 }
 
 /** Current schema version. Bump and add a `.version(n)` block with an upgrade for every schema change. */
-export const SCHEMA_VERSION = 1;
+export const SCHEMA_VERSION = 2;
 
 export class FormLabDB extends Dexie {
   foods!: Table<Food, string>;
@@ -87,9 +87,24 @@ export class FormLabDB extends Dexie {
       importRecords: 'id, at',
       meta: 'key'
     });
-    // Example of how future migrations are added:
-    // this.version(2).stores({ foods: 'id, name, kind, updatedAt, barcode' }).upgrade(tx => tx.table('foods').toCollection().modify(f => { f.barcode ??= undefined; }));
+    // v2: training-recovery preferences (no index changes, data upgrade only)
+    this.version(2)
+      .stores({})
+      .upgrade((tx) =>
+        tx
+          .table('preferences')
+          .toCollection()
+          .modify((p: Record<string, unknown>) => {
+            upgradePreferencesV2(p);
+          })
+      );
   }
+}
+
+/** Shared by the Dexie upgrade and backup migration so both stay identical. */
+export function upgradePreferencesV2(p: Record<string, unknown>): void {
+  if (typeof p.recoveryDefaultHours !== 'number') p.recoveryDefaultHours = 48;
+  if (!p.recoveryOverrides || typeof p.recoveryOverrides !== 'object') p.recoveryOverrides = {};
 }
 
 export const TABLE_NAMES = [

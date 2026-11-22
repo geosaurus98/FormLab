@@ -4,7 +4,8 @@ import { ensureSeeded, addExampleProgrammes } from './seed';
 import { createRecipe, updateRecipe, startCooking, finishCooking, createBranch, promoteVersion, deleteRecipe, duplicateRecipe, versionNutrition } from './recipeService';
 import { copyFromYesterday, entriesForDate, logFood, logRecipe, updatePortion, deleteEntry, saveMealFromEntries, logSavedMeal, parseFoodCsv } from './foodService';
 import { addPlanEntry, createPlan, generateGroceryList, recipeCandidates } from './plannerService';
-import { finishWorkout, getActiveWorkout, saveWorkout, startWorkout, saveEditedWorkout, logCardio } from './workoutService';
+import { finishWorkout, getActiveWorkout, saveWorkout, startWorkout, saveEditedWorkout, logCardio, startFromPlan } from './workoutService';
+import { recommendTraining } from '../domain/workouts/recommend';
 import { exportBackup, restoreBackup, validateBackup } from './backup';
 import { toggleSetComplete, updateSet } from '../domain/workouts/session';
 import { computeRecords, exerciseProgress } from '../domain/workouts/records';
@@ -169,5 +170,33 @@ describe('end-to-end data flow (service layer)', () => {
     expect(foods[0]!.per100.fatG).toBeNull();
     expect(foods[0]!.per100.energyKcal).toBe(60);
     expect(errors).toHaveLength(1);
+  });
+});
+
+describe('training recommendation → workout', () => {
+  it('starts a session that applies trims, swaps and drops from the plan', async () => {
+    await addExampleProgrammes();
+    await db.equipment.update('eq_lat_pulldown', { available: false });
+    const [templates, programmes, exercises, equipment] = await Promise.all([db.templates.toArray(), db.programmes.toArray(), db.exercises.toArray(), db.equipment.toArray()]);
+    const rec = recommendTraining({
+      templates: templates.filter((t) => t.id === 'tpl_upper'),
+      programmes,
+      history: [],
+      exercises: new Map(exercises.map((e) => [e.id, e])),
+      equipment: new Map(equipment.map((e) => [e.id, e])),
+      recovery: { defaultHours: 48, overrides: {} },
+      availableMin: 35,
+      weekStart: '2026-01-05',
+      weeklyTarget: null
+    });
+    const best = rec.best!;
+    const session = await startFromPlan({ templateId: best.template.id, programmeId: null, plan: best.plan });
+    const kept = best.plan.filter((p) => p.action !== 'drop');
+    expect(session.exercises).toHaveLength(kept.length);
+    expect(session.exercises.some((es) => es.exerciseId === 'ex_lat_pulldown')).toBe(false);
+    const swapped = session.exercises.find((es) => es.replacedExerciseId === 'ex_lat_pulldown');
+    if (kept.some((p) => p.exerciseId === 'ex_lat_pulldown')) expect(swapped?.exerciseId).toBe('ex_pull_up');
+    for (const [i, es] of session.exercises.entries()) expect(es.sets.filter((s) => s.type !== 'warmup')).toHaveLength(kept[i]!.sets);
+    expect((await getActiveWorkout())!.id).toBe(session.id);
   });
 });

@@ -52,6 +52,20 @@ The timer is stored on the session as `{endsAt, pausedRemainingMs, durationMs}`,
 
 A programme has an ordered list of templates and a schedule: **rotation** (next template after the last completed one, whenever you train; no forced 7-day cycle) or **weekdays**. `nextTemplateInProgramme` drives Home and the Train tab.
 
+## Training recommendations
+
+`recommendTraining()` (`domain/workouts/recommend.ts`) answers "what should I train today?" from logged data and your own settings only:
+
+1. **Candidates:** every non-archived template with exercises. The next workout of each *active* programme gets a head start (+40 vs +10).
+2. **Equipment:** exercises whose equipment is marked unavailable are swapped for the best available alternative (see Alternatives below), or dropped if none exists. Each change has a reason.
+3. **Recovery:** for each primary muscle the plan trains, hours since its last completed working set are compared with your **recovery preference** (default 48 h, with optional per-muscle overrides in Settings → Training). Every muscle past its window: +25. Each muscle inside its window: −15, with a warning such as "chest (24 h ago, preference 48 h)".
+4. **Time:** if you pick an available time (30/45/60/90 min), the estimate uses `sets × 45 s + rest between sets + 90 s per exercise + 5 min` (all in `DEFAULT_TIMING`). `fitToTime` first removes sets from later exercises (never below 2 sets on the first two exercises, or 1 on the rest), then drops exercises from the end. The first exercise is never dropped. Trimming costs −5, so a template that already fits is preferred.
+5. **Context:** days since your last workout, and progress against the weekly *consistency* goal.
+
+If every template trains a muscle that is still inside its window, the result is **rest or cardio**: the best workout is still offered, with a note that the window is your own setting. **Start** calls `startFromPlan`, which applies the drops, trims and swaps to a new session. Swapped exercises get their own history-based prefill, never the old exercise's loads.
+
+The recommendation never claims a workout is appropriate for you, and it can't judge readiness, pain or illness. The UI says so.
+
 ## Alternatives
 
 `findAlternatives` ranks substitutes: listed alternative (+50), same movement pattern (+30), shared primary muscles (+10 each), equipment not marked available (−40). Equipment availability is configured in Settings, and less common machines default to unavailable.
