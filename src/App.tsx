@@ -81,7 +81,7 @@ const router = createBrowserRouter([
       { path: '*', element: <RouteError /> }
     ]
   }
-]);
+], { basename: import.meta.env.BASE_URL.replace(/\/$/, '') || '/' });
 
 function Reminders() {
   const toast = useToast();

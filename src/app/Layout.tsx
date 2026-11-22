@@ -33,7 +33,7 @@ export function Layout() {
     <div className="min-h-screen lg:flex">
       <aside className="sticky top-0 hidden h-screen w-60 shrink-0 overflow-y-auto border-r border-slate-200 bg-white px-3 py-4 dark:border-slate-800 dark:bg-slate-900 lg:block">
         <div className="mb-6 flex items-center gap-2 px-2">
-          <img src="/icon.svg" alt="" className="h-8 w-8" />
+          <img src={`${import.meta.env.BASE_URL}icon.svg`} alt="" className="h-8 w-8" />
           <span className="text-lg font-bold">FormLab</span>
         </div>
         {SECTIONS.map((s) => (

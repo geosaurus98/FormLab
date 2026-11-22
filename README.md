@@ -34,13 +34,21 @@ npm run build
 npm run preview
 ```
 
-### Install on an Android phone
+### Use it on your phone (GitHub Pages)
 
-1. Host the `dist/` folder on any static HTTPS host (GitHub Pages, Netlify, Cloudflare Pages or your own server). Service workers need HTTPS; `localhost` is the only exception.
-2. Open the URL in Chrome on the phone and choose **Add to Home screen** / **Install app**.
+The repository includes `.github/workflows/deploy-pages.yml`. Every push to `main` runs the tests, builds the app for the `/FormLab/` sub-path, and publishes it to **https://geosaurus98.github.io/FormLab/**.
+
+One-time setup: on GitHub, open the repository's **Settings → Pages → Build and deployment → Source** and choose **GitHub Actions**. Then re-run the "Deploy to GitHub Pages" workflow from the **Actions** tab, or push to `main`.
+
+To install it:
+
+1. Open the address in Chrome on your Android phone.
+2. Choose **Install app** (or **Add to Home screen**).
 3. Open it once while online. After that it works fully offline.
 
-All routes fall back to `index.html`, so configure your host's single-page-app fallback (`404.html` → `index.html` on GitHub Pages).
+GitHub Pages only hosts the app's files; your data still lives only on your phone. Pages has no single-page-app rewrites, so the workflow copies `index.html` to `404.html`. A deep link opened before the app is cached may log a harmless 404 in the console while the app loads normally.
+
+To host it elsewhere, build with `BASE_PATH=/your/sub/path/ npm run build` (the default is `/`) and serve `dist/` over HTTPS with an `index.html` fallback.
 
 ## Scripts
 

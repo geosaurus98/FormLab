@@ -27,7 +27,7 @@ export async function showNotification(title: string, body: string): Promise<voi
   if (typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
   try {
     const reg = await navigator.serviceWorker?.getRegistration();
-    if (reg) await reg.showNotification(title, { body, icon: '/icon-192.png', tag: 'formlab-rest' });
+    if (reg) await reg.showNotification(title, { body, icon: `${import.meta.env.BASE_URL}icon-192.png`, tag: 'formlab-rest' });
     else new Notification(title, { body });
   } catch {
     /* notifications are optional */
