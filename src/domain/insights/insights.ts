@@ -200,3 +200,41 @@ export function topFoods(entries: FoodLogEntry[], limit = 10): { name: string; c
   }
   return [...m.values()].sort((a, b) => b.count - a.count).slice(0, limit);
 }
+
+/**
+ * Share of energy from protein, carbohydrate and fat (Atwater 4/4/9), averaged over days with all
+ * three known. Shares are of macro-derived energy, so they sum to 100 % even when label energy differs.
+ */
+export function macroDistribution(days: DayAggregate[]): { proteinPct: number; carbsPct: number; fatPct: number; n: number } | null {
+  const eligible = days.filter((d) => d.proteinG != null && d.carbsG != null && d.fatG != null && d.proteinG + d.carbsG + d.fatG > 0);
+  if (!eligible.length) return null;
+  let p = 0, c = 0, f = 0;
+  for (const d of eligible) {
+    const pe = d.proteinG! * 4, ce = d.carbsG! * 4, fe = d.fatG! * 9;
+    const total = pe + ce + fe;
+    p += pe / total;
+    c += ce / total;
+    f += fe / total;
+  }
+  const n = eligible.length;
+  return { proteinPct: (p / n) * 100, carbsPct: (c / n) * 100, fatPct: (f / n) * 100, n };
+}
+
+export interface RecipeUsage {
+  recipeId: string;
+  servingsLogged: number;
+  timesLogged: number;
+}
+
+/** How often each recipe was logged in a set of diary entries. */
+export function recipeUsage(entries: FoodLogEntry[]): Map<string, RecipeUsage> {
+  const m = new Map<string, RecipeUsage>();
+  for (const e of entries) {
+    if (e.origin.type !== 'recipe') continue;
+    const cur = m.get(e.origin.recipeId) ?? { recipeId: e.origin.recipeId, servingsLogged: 0, timesLogged: 0 };
+    cur.servingsLogged += e.origin.servings;
+    cur.timesLogged += 1;
+    m.set(e.origin.recipeId, cur);
+  }
+  return m;
+}
