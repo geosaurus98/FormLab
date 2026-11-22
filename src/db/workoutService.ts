@@ -2,6 +2,7 @@ import { db } from './db';
 import { buildExerciseSession, completeSession, editCompletedSession, startSession } from '../domain/workouts/session';
 import { WorkoutSessionSchema, type CardioActivity, type ExerciseSession, type WorkoutSession, type WorkoutTemplate } from '../domain/workouts/types';
 import { estimateCardioKcal, isLikelyDuplicate } from '../domain/workouts/cardio';
+import type { PlannedExercise } from '../domain/workouts/recommend';
 import { dailyWeights } from '../domain/body/body';
 import { newId } from '../lib/id';
 import { nowIso } from '../lib/utils';
@@ -112,4 +113,39 @@ export async function logCardio(input: Omit<CardioActivity, 'id' | 'createdAt' |
   const duplicateOf = sameDay.find((c) => isLikelyDuplicate(c, activity)) ?? null;
   await db.cardio.add(activity);
   return { activity, duplicateOf };
+}
+
+/**
+ * Starts a workout from a recommendation plan: drops, trims and swaps blocks as planned.
+ * Swapped exercises get their own history-based prefill (loads aren't carried across exercises).
+ */
+export async function startFromPlan(params: { templateId: string; programmeId: string | null; plan: PlannedExercise[]; gymId?: string | null }): Promise<WorkoutSession> {
+  const existing = await getActiveWorkout();
+  if (existing) return existing;
+  const session = await startWorkout({ templateId: params.templateId, programmeId: params.programmeId, gymId: params.gymId });
+  const template = await db.templates.get(params.templateId);
+  if (!template) return session;
+  const blocks: ExerciseSession[] = [];
+  for (const [i, te] of template.exercises.entries()) {
+    const p = params.plan.find((x) => x.templateExerciseId === te.id);
+    const block = session.exercises.find((es, j) => j === i && es.exerciseId === te.exerciseId) ?? session.exercises.find((es) => es.exerciseId === te.exerciseId);
+    if (!block) continue;
+    if (!p || p.action === 'keep') {
+      blocks.push(block);
+      continue;
+    }
+    if (p.action === 'drop') continue;
+    let next = block;
+    if (p.action === 'swap') {
+      const swapped = await buildBlock(p.useExerciseId, session.gymId);
+      next = { ...swapped, target: block.target, replacedExerciseId: block.exerciseId, notes: p.reason ?? '' };
+    }
+    const warm = next.sets.filter((s) => s.type === 'warmup');
+    const work = next.sets.filter((s) => s.type !== 'warmup');
+    while (work.length < p.sets && work.length > 0) work.push({ ...work[work.length - 1]!, id: newId('set') });
+    blocks.push({ ...next, sets: [...warm, ...work.slice(0, p.sets)] });
+  }
+  const updated: WorkoutSession = { ...session, exercises: blocks, notes: params.plan.some((p) => p.action !== 'keep') ? 'Started from a recommendation (adjusted for time/equipment).' : '', updatedAt: nowIso() };
+  await db.workouts.put(updated);
+  return updated;
 }

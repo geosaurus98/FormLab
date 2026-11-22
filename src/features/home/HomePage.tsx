@@ -19,6 +19,7 @@ import { logRecipe } from '../../db/foodService';
 import { addDays, formatDateKey, formatDuration, isoToDateKey, relativeDayLabel, startOfWeek, daysBetween } from '../../lib/dates';
 import { WeightEntrySheet, useMassUnit } from '../progress/ProgressPage';
 import { useToast } from '../../components/toast';
+import { RecommendationCard } from '../workouts/RecommendationCard';
 
 export function HomePage() {
   const today = useToday();
@@ -110,6 +111,8 @@ export function HomePage() {
           {lastBackup ? 'Your last backup was over two weeks ago.' : "You haven't exported a backup yet."} <Link to="/settings" className="font-medium underline">Back up now</Link> — data only lives on this device.
         </Notice>
       )}
+
+      <RecommendationCard compact />
 
       <div className="grid gap-4 lg:grid-cols-2">
         <Card>

@@ -284,7 +284,7 @@ function TrainingSection({ prefs }: { prefs: Preferences }) {
   const gyms = useLiveQuery(() => db.gyms.toArray(), []);
   const [gymName, setGymName] = useState('');
   return (
-    <Card className="space-y-3">
+    <Card id="training" className="space-y-3">
       <CardTitle>Training</CardTitle>
       <div className="grid grid-cols-2 gap-3">
         <Field label="Default rest (s)">{(id) => <NumberInput id={id} value={prefs.defaultRestSec} onChange={(v) => void updatePrefs({ defaultRestSec: v ?? 90 })} step={15} min={0} />}</Field>
@@ -300,6 +300,7 @@ function TrainingSection({ prefs }: { prefs: Preferences }) {
           )}
         </Field>
       </div>
+      <RecoverySettings prefs={prefs} />
       <Checkbox checked={prefs.restTimerSound} onChange={(v) => void updatePrefs({ restTimerSound: v })} label="Rest timer sound & vibration" />
       <Checkbox
         checked={prefs.restTimerNotifications}
@@ -342,6 +343,32 @@ function TrainingSection({ prefs }: { prefs: Preferences }) {
         </div>
       </details>
     </Card>
+  );
+}
+
+const RECOVERY_MUSCLES = ['chest', 'back', 'lats', 'shoulders', 'biceps', 'triceps', 'quads', 'hamstrings', 'glutes', 'calves', 'core'];
+
+function RecoverySettings({ prefs }: { prefs: Preferences }) {
+  const setOverride = (m: string, v: number | null) => {
+    const next = { ...prefs.recoveryOverrides };
+    if (v == null) delete next[m];
+    else next[m] = v;
+    void updatePrefs({ recoveryOverrides: next });
+  };
+  return (
+    <div className="space-y-2">
+      <Field label="Recovery preference (hours before training a muscle again)" hint="Used by 'Recommended today'. It's your own rule of thumb, not a measurement of recovery.">
+        {(id) => <NumberInput id={id} value={prefs.recoveryDefaultHours} onChange={(v) => void updatePrefs({ recoveryDefaultHours: v ?? 48 })} step={6} min={0} />}
+      </Field>
+      <details>
+        <summary className="cursor-pointer text-sm">Per-muscle overrides ({Object.keys(prefs.recoveryOverrides).length})</summary>
+        <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
+          {RECOVERY_MUSCLES.map((m) => (
+            <Field key={m} label={m}>{(id) => <NumberInput id={id} value={prefs.recoveryOverrides[m] ?? null} onChange={(v) => setOverride(m, v)} step={6} min={0} placeholder={`${prefs.recoveryDefaultHours}`} />}</Field>
+          ))}
+        </div>
+      </details>
+    </div>
   );
 }
 

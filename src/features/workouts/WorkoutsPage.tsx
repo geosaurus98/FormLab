@@ -7,6 +7,7 @@ import { addExampleProgrammes } from '../../db/seed';
 import { startWorkout } from '../../db/workoutService';
 import { Badge, Button, Card, CardTitle, EmptyState, PageHeader, Tabs } from '../../components/ui';
 import { useToast } from '../../components/toast';
+import { RecommendationCard } from './RecommendationCard';
 import { nextTemplateInProgramme } from '../../domain/workouts/session';
 import { sessionVolume } from '../../domain/workouts/records';
 import { CARDIO_LABEL } from '../../domain/workouts/types';
@@ -83,6 +84,8 @@ function StartTab() {
           </div>
         </Card>
       )}
+
+      <RecommendationCard />
 
       {(gyms?.length ?? 0) > 1 && (
         <div className="flex items-center gap-2 text-sm">
