@@ -17,17 +17,20 @@ Recipe Lab branches, immutable versions, validated substitutions, appliance prof
 **Phase 5: personalisation and insights (first pass)** ✅
 Cross-domain insights with sample sizes, explainable meal recommendations, a feedback-based recipe suggestion, local reminders, JSON backup/restore and CSV export, food CSV import.
 
+**Phase 5b: training recommendations and nutrition analytics** ✅
+Explainable "Recommended today" (programme schedule, per-muscle recovery preference, equipment swaps, time-based trimming, weekly target), started directly as a workout. Insights gained energy and protein vs target by day, macronutrient distribution, and a recipe nutrition comparison. Schema v2 migration. Lazy-loaded routes (main app chunk ~80 kB gzipped).
+
 ## Next steps (suggested priority)
 
 1. **Verify starter food values** against NZ FOODfiles / product labels and add common NZ branded items (bread, yoghurt, milk). Add a FOODfiles CSV mapping to the importer.
-2. **Workout recommendations panel:** combine the next scheduled template, days since each muscle group was trained (against user-set recovery preferences), available time (trim accessories) and equipment. The building blocks already exist (`nextTemplateInProgramme`, `muscleSetDistribution`, `findAlternatives`).
+2. **Learn timing from history:** replace the fixed 45 s/set timing assumption with your actual median set and session durations once enough workouts are logged.
 3. **Barcode scanning** through a `FoodDataProvider` (e.g. Open Food Facts) with cached results and provenance, kept optional.
 4. **Health Connect import** through an `ActivitySourceAdapter`, needing a thin Android wrapper (e.g. a Trusted Web Activity or Capacitor) because browsers can't access Health Connect. Use `isLikelyDuplicate` and `ImportRecord`.
 5. **Plate calculator** and per-dumbbell available weights for more accurate increments.
 6. **Recipe nutrition per version in Insights** (meal-prep vs adherence by recipe) and preference learning from ratings (e.g. cuisine weights in recommendations).
 7. **Optional sync** through `SyncAdapter` (WebDAV or a user's own cloud folder), keeping local-first.
 8. **Push reminders** only if a free, self-hostable option is acceptable; until then reminders stay local and best effort.
-9. **Code-split** feature routes to reduce the initial bundle (currently about 340 kB gzipped total).
+9. **Lazy-load charts on Home** (Recharts is still loaded up front because Home shows a weight chart).
 
 ## Known limitations
 

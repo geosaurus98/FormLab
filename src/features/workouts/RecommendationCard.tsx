@@ -110,7 +110,7 @@ export function RecommendationCard({ compact = false }: { compact?: boolean }) {
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <div className="text-lg font-semibold">{best.template.name}</div>
-          <div className="text-xs text-slate-500">
+          <div className="text-xs text-slate-500" data-testid="rec-estimate" data-minutes={best.estimatedMinutes}>
             ≈{best.estimatedMinutes} min{best.estimatedMinutes !== best.originalMinutes && ` (normally ≈${best.originalMinutes})`} · {best.plan.filter((p) => p.action !== 'drop').length} exercises
           </div>
         </div>

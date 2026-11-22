@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { NavLink, Outlet, useLocation } from 'react-router-dom';
 import { BookOpen, CalendarDays, ChefHat, Dumbbell, FlaskConical, Home, LineChart, Menu, Settings, ShoppingCart, Sparkles, Utensils, Library, Database, WifiOff } from 'lucide-react';
 import { useLiveQuery } from 'dexie-react-hooks';
@@ -60,7 +61,9 @@ export function Layout() {
           </NavLink>
         )}
         <main className={cn('mx-auto w-full max-w-5xl px-4 pt-4', hideChrome ? 'pb-6' : 'pb-24 lg:pb-8')}>
-          <Outlet />
+          <Suspense fallback={<div className="p-8 text-center text-sm text-slate-500">Loading…</div>}>
+            <Outlet />
+          </Suspense>
         </main>
       </div>
 
