@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { NutrientsSchema, sumNutrients, scaleNutrients, type Nutrients, type NutrientTotals } from './nutrients';
-import { DataQualitySchema } from '../shared/provenance';
+import { DataQualitySchema, type DataQuality } from '../shared/provenance';
 import { nutrientsForAmount, type Food, type FoodServing } from './foods';
 import { newId } from '../../lib/id';
 import { nowIso } from '../../lib/utils';
@@ -90,6 +90,10 @@ export interface RecipeServingSnapshot {
   name: string;
   perServing: Nutrients;
   incomplete: boolean;
+  /** 'calculated' from ingredient data (default) or 'estimate' when an outside estimate was used */
+  quality?: DataQuality;
+  /** short note shown in the diary, e.g. "recipe book estimate" */
+  basisNote?: string;
 }
 
 export function entryFromRecipe(params: { recipe: RecipeServingSnapshot; date: DateKey; meal: string; servings: number }): FoodLogEntry {
@@ -100,12 +104,12 @@ export function entryFromRecipe(params: { recipe: RecipeServingSnapshot; date: D
     date,
     meal,
     name: recipe.name,
-    description: `${servings} serving${servings === 1 ? '' : 's'} · recipe v${recipe.versionNumber}`,
+    description: `${servings} serving${servings === 1 ? '' : 's'} · recipe v${recipe.versionNumber}${recipe.basisNote ? ` · ${recipe.basisNote}` : ''}`,
     origin: { type: 'recipe', recipeId: recipe.recipeId, recipeVersionId: recipe.recipeVersionId, versionNumber: recipe.versionNumber, servings },
     nutrients: scaleNutrients(recipe.perServing, servings),
     unitNutrients: recipe.perServing,
     incomplete: recipe.incomplete,
-    quality: 'calculated',
+    quality: recipe.quality ?? 'calculated',
     createdAt: now,
     updatedAt: now
   };
@@ -152,7 +156,7 @@ export function rescaleEntry(entry: FoodLogEntry, newQuantity: number): FoodLogE
       ...entry,
       origin: { ...o, servings: newQuantity },
       nutrients: scaleNutrients(entry.unitNutrients, newQuantity),
-      description: `${newQuantity} serving${newQuantity === 1 ? '' : 's'} · recipe v${o.versionNumber}`,
+      description: `${newQuantity} serving${newQuantity === 1 ? '' : 's'} · recipe v${o.versionNumber}${entry.quality === 'estimate' ? ' · recipe book estimate' : ''}`,
       updatedAt: nowIso()
     };
   }

@@ -79,6 +79,14 @@ To host it elsewhere, build with `BASE_PATH=/your/sub/path/ npm run build` (the 
 - Energy estimates (Mifflin–St Jeor, cardio MET values) are labelled estimates. Estimated exercise energy is never added to your allowance unless you opt in, and never on top of an estimator-based target, which already includes activity.
 - There is no fake history: no workouts, weights, records or diary entries are seeded.
 
+## Importing your recipe book
+
+**Recipes → Import** downloads `planner/recipes.json` from [geosaurus98/recipe-book](https://github.com/geosaurus98/recipe-book) (you can also upload the file), shows a preview, and imports the chapters you choose.
+
+- Run it again whenever the book changes. Only changed recipes get a new version, and recipes you've edited in FormLab are never overwritten.
+- Nutrition uses FormLab's food data where complete, otherwise the book's own per-serving estimate, labelled as an estimate.
+- See RECIPE_ENGINE.md for details.
+
 ## Documentation
 
 - [ARCHITECTURE.md](ARCHITECTURE.md): structure, layers and key decisions

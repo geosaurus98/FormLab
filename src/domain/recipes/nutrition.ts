@@ -1,7 +1,8 @@
 import { addToTotals, emptyTotals, totalsToNutrients, type Nutrients, type NutrientTotals } from '../nutrition/nutrients';
 import { nutrientsForAmount, type Food } from '../nutrition/foods';
 import { toGrams } from '../../lib/units';
-import type { Ingredient, RecipeVersion } from './types';
+import type { DeclaredNutrition, Ingredient, RecipeVersion } from './types';
+import type { DataQuality } from '../shared/provenance';
 
 export interface IngredientNutritionIssue {
   recipeIngredientId: string;
@@ -85,4 +86,26 @@ export function calculateRecipeNutrition(version: Pick<RecipeVersion, 'ingredien
     complete,
     totalGrams
   };
+}
+
+export interface ServingNutrition {
+  perServing: Nutrients;
+  incomplete: boolean;
+  quality: DataQuality;
+  /** 'calculated' from FormLab food data, or 'declared' outside estimate (e.g. the recipe book's) */
+  basis: 'calculated' | 'declared';
+}
+
+/**
+ * The per-serving figures to display and log. FormLab's ingredient calculation wins when energy and
+ * protein are fully known; otherwise a declared outside estimate is used (labelled with its
+ * quality); with neither, the incomplete calculation is used and flagged.
+ */
+export function servingNutrition(nutrition: RecipeNutrition, declared: DeclaredNutrition | null | undefined): ServingNutrition {
+  const calcOk = nutrition.total.itemCount > 0 && nutrition.total.missing.energyKcal === 0 && nutrition.total.missing.proteinG === 0;
+  if (!calcOk && declared && declared.nutrients.energyKcal != null) {
+    const n = declared.nutrients;
+    return { perServing: n, incomplete: n.proteinG == null || n.carbsG == null || n.fatG == null, quality: declared.quality, basis: 'declared' };
+  }
+  return { perServing: nutrition.perServing, incomplete: !nutrition.complete, quality: 'calculated', basis: 'calculated' };
 }

@@ -4,7 +4,9 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { AlertTriangle, ArrowLeft, Archive, CalendarPlus, ChefHat, Copy, FlaskConical, Minus, Pencil, Plus, Star, Trash2, Utensils, Info, ShieldAlert } from 'lucide-react';
 import { db } from '../../db/db';
 import { Badge, Button, Card, CardTitle, Notice, PageHeader, Select, Sheet, NumberInput, Field } from '../../components/ui';
-import { NutrientTable, ValidationBadge, IncompleteMark, useEnergy } from '../../components/nutrition';
+import { NutrientTable, ValidationBadge, IncompleteMark, QualityBadge, useEnergy } from '../../components/nutrition';
+import { chooseServingNutrition } from '../../db/recipeService';
+import { RECIPE_BOOK_REPO_URL, RECIPE_BOOK_SOURCE_NAME } from '../../domain/recipes/recipeBook';
 import { useToast } from '../../components/toast';
 import { useNutritionLookup, useToday } from '../../hooks/data';
 import { calculateRecipeNutrition } from '../../domain/recipes/nutrition';
@@ -40,6 +42,7 @@ export function RecipeDetailPage() {
   const version = versions?.find((v) => v.id === (versionId ?? recipe?.currentVersionId));
   const scaled = useMemo(() => (version ? (servings && servings !== version.servings ? scaleVersion(version, servings) : version) : null), [version, servings]);
   const nutrition = useMemo(() => (scaled && lookup ? calculateRecipeNutrition(scaled, lookup) : null), [scaled, lookup]);
+  const logged = useMemo(() => (nutrition && scaled ? chooseServingNutrition(nutrition, scaled.declaredNutrition ?? null, { recipeId: '', recipeVersionId: '', versionNumber: 0, name: '' }) : null), [nutrition, scaled]);
   const cost = useMemo(() => (scaled && lookup ? estimateRecipeCost(scaled, lookup.ingredients) : null), [scaled, lookup]);
   const safety = useMemo(() => (version && lookup && profiles ? checkRecipeSafety(version, lookup.ingredients, new Map(profiles.map((p) => [p.id, p]))) : []), [version, lookup, profiles]);
   if (!recipe || !version || !scaled || !lookup) return <div className="p-8 text-center text-slate-500">Loading…</div>;
@@ -59,7 +62,18 @@ export function RecipeDetailPage() {
         }
       />
       {recipe.archived && <Notice tone="warn">This recipe is archived. <button className="underline" onClick={() => void setRecipeFlags(recipe.id, { archived: false })}>Restore</button></Notice>}
-      <p className="text-sm text-slate-600 dark:text-slate-300">{recipe.description}</p>
+      {recipe.source.name === RECIPE_BOOK_SOURCE_NAME && (
+        <div className="flex flex-wrap items-center gap-2 text-xs">
+          <Badge tone="indigo">From your recipe book</Badge>
+          {recipe.source.note && (
+            <a href={`${RECIPE_BOOK_REPO_URL}/blob/main/${recipe.source.note}`} target="_blank" rel="noreferrer" className="text-brand-700 underline">
+              {recipe.source.note}
+            </a>
+          )}
+          <span className="text-slate-500">Edit it in the book and re-import, or edit here (your version is kept).</span>
+        </div>
+      )}
+      <p className="whitespace-pre-line text-sm text-slate-600 dark:text-slate-300">{recipe.description}</p>
 
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
         <Link to={`/recipes/${recipe.id}/cook?version=${version.id}&servings=${scaled.servings}`}>
@@ -129,8 +143,8 @@ export function RecipeDetailPage() {
                   <li key={ri.id} className="flex items-baseline gap-2">
                     <span className="w-24 shrink-0 text-right font-medium tabular-nums">{formatQuantity(ri.quantity, ri.unit)}</span>
                     <span>
-                      {ing?.name ?? 'Unknown'}
-                      {ri.preparation && <span className="text-slate-500">, {ri.preparation}</span>}
+                      {ri.quantity === 0 && ri.preparation ? ri.preparation : ing?.name ?? 'Unknown'}
+                      {ri.preparation && ri.quantity !== 0 && <span className="text-slate-500">, {ri.preparation}</span>}
                       {ri.optional && <Badge className="ml-1">optional</Badge>}
                       {missing && <IncompleteMark show title="No usable nutrition data for this ingredient" />}
                     </span>
@@ -157,13 +171,27 @@ export function RecipeDetailPage() {
         </div>
         <div className="space-y-4">
           <Card>
-            <CardTitle>Nutrition per serving</CardTitle>
-            {nutrition && (
+            <CardTitle>Nutrition per {scaled.declaredNutrition?.perLabel ?? 'serving'}</CardTitle>
+            {nutrition && logged && logged.quality === 'estimate' && (
+              <>
+                <div className="mb-1 flex items-center gap-2 text-2xl font-bold tabular-nums">
+                  {fmt(logged.perServing.energyKcal)} <span className="text-sm font-normal text-slate-500">{unit}</span>
+                  <QualityBadge quality="estimate" />
+                </div>
+                <NutrientTable totals={{ values: logged.perServing }} />
+                <Notice className="mt-2 text-xs">
+                  <strong>Recipe book estimate</strong> ({scaled.declaredNutrition!.source}). This is what's logged to your diary, because FormLab's own calculation is incomplete: {fmt(nutrition.perServing.energyKcal)} {unit} and {Math.round(nutrition.perServing.proteinG ?? 0)} g protein from known ingredients, missing {[...new Set(nutrition.issues.map((i) => i.ingredientName))].slice(0, 6).join(', ')}
+                  {new Set(nutrition.issues.map((i) => i.ingredientName)).size > 6 ? '…' : ''}. <Link to="/foods" className="underline">Add foods</Link> to calculate it exactly.
+                </Notice>
+              </>
+            )}
+            {nutrition && logged?.quality !== 'estimate' && (
               <>
                 <div className="mb-2 text-2xl font-bold tabular-nums">
                   {fmt(nutrition.perServing.energyKcal)} <span className="text-sm font-normal text-slate-500">{unit}</span>
                 </div>
                 <NutrientTable totals={{ values: nutrition.perServing }} />
+                {scaled.declaredNutrition && <p className="mt-2 text-xs text-slate-500">Recipe book estimate for comparison: {fmt(scaled.declaredNutrition.nutrients.energyKcal)} {unit}, {Math.round(scaled.declaredNutrition.nutrients.proteinG ?? 0)} g protein.</p>}
                 {!nutrition.complete ? (
                   <Notice tone="warn" className="mt-2 text-xs">
                     Incomplete estimate — missing data for: {[...new Set(nutrition.issues.map((i) => i.ingredientName))].join(', ')}. <Link to="/foods" className="underline">Update foods</Link>

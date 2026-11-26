@@ -20,6 +20,8 @@ npm run e2e
 | `src/domain/body/body.test.ts` | Multiple weigh-ins per day; 7-day rolling average with missing dates and minimum points; trend thresholds; change over a range; goal progress; kg/lb; insights aggregation, correlation thresholds and group-comparison sample sizes |
 
 | `src/domain/workouts/recommend.test.ts` | Next programme workout chosen; recovery-window warnings and preferring the other split; rest/cardio when everything conflicts; per-muscle overrides; equipment swaps; time trimming (sets first, then accessories, first exercise kept); duration estimate; last-trained hours |
+| `src/domain/recipes/recipeBook.test.ts` | Parsing the real `recipes.json` shape (from a 5-recipe fixture); bad rows reported without failing the rest; quantities and units kept; mapping to existing ingredients; appliances, step detection and timers from book text; the book estimate kept as an estimate; slices and serving ranges; exclusion tags; conversions filled without overwriting; nutrition with missing items flagged; fingerprint stability; water recovery; amountless lines collapsed |
+| `src/db/recipeBook.integration.test.ts` | Preview writes nothing; import creates recipes, ingredients and an import record; unchanged re-import; changed recipe becomes a new main version with diary untouched; local edits produce a branch; deleted recipes not re-created; logging uses the labelled book estimate; chapter filter; suggestions exclude baking; bulk kitchen-tested marking |
 | `src/db/migration.test.ts` | Opens a real v1 database with current code (data kept, new preference fields added); v1 backup migration and validation; newer-schema backups rejected |
 
 Insights helpers (macro distribution, recipe usage) are covered in `body.test.ts`.
@@ -43,8 +45,11 @@ Insights helpers (macro distribution, recipe usage) are covered in `body.test.ts
 2. **Offline:** after the service worker takes control, go offline, reload, then log food, view a recipe, and start, log and finish a workout.
 3. **Recipe Lab:** create an experiment and confirm the original recipe is unchanged.
 4. **Training recommendation:** add the example programmes, choose 30 minutes, check the recommended estimate fits, and start it as a workout.
+5. **Recipe book import:** the download is intercepted and served the fixture. The test previews, imports 5 recipes, re-checks ("Everything is up to date"), filters by source, opens a recipe, logs a serving and checks that the diary shows the book estimate.
 
 The suite is set up to run without traces (`--trace off`). To debug one failure, rerun it with `--trace on`.
+
+The full 247-recipe book was also run through the UI with Playwright: preview about 0.4 s, import about 0.9 s, and the list of 140 main meals rendered in about 0.6 s, with no console errors.
 
 ## Manual checks worth doing on a real phone
 

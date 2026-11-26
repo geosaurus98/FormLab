@@ -251,3 +251,31 @@ test('training recommendation fits the available time and starts a workout', asy
   await page.getByRole('button', { name: 'Discard workout' }).click();
   await expect(page).toHaveURL(/\/workouts$/);
 });
+
+test('imports recipes from the recipe book and logs a serving with the book estimate', async ({ page }) => {
+  const fixture = readFileSync('src/test/fixtures/recipe-book-sample.json', 'utf8');
+  await page.route('https://raw.githubusercontent.com/geosaurus98/recipe-book/**', (route) => route.fulfill({ status: 200, contentType: 'application/json', body: fixture }));
+  await page.goto('/recipes');
+  await page.getByRole('link', { name: 'Import' }).click();
+  await page.getByRole('button', { name: /Check for recipes/ }).click();
+  await expect(page.getByText('New: 5')).toBeVisible();
+  await page.getByRole('button', { name: 'Import 5 recipes' }).click();
+  await expect(page.getByText(/Done\. Imported recipes are in your library/)).toBeVisible();
+
+  // Re-checking finds nothing new
+  await page.getByRole('button', { name: /Check for recipes/ }).click();
+  await expect(page.getByText('Unchanged: 5')).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Everything is up to date' })).toBeDisabled();
+
+  await page.goto('/recipes?source=book');
+  await expect(page.getByText('PantryGenome · 5 shown')).toBeVisible();
+  await page.getByRole('heading', { name: /Chilli Con Carne/ }).click();
+  await expect(page.getByText('From your recipe book')).toBeVisible();
+  await expect(page.getByText(/Recipe book estimate/).first()).toBeVisible();
+  await page.getByRole('button', { name: 'Log serving' }).click();
+  await page.getByRole('dialog').getByRole('button', { name: /^Log 1 serving/ }).click();
+  await expect(page.getByText('Logged 1 serving(s)')).toBeVisible();
+  await page.goto('/food');
+  await expect(page.getByText(/recipe book estimate/)).toBeVisible();
+  await expect(page.getByTestId('day-kcal')).toContainText(String(JSON.parse(fixture).find((r: { id: string }) => r.id === 'SlowCooker-Chilli_Con_Carne_Red_Lentils').nutrition.kcal));
+});

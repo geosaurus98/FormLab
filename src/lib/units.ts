@@ -4,7 +4,7 @@
  */
 export const MASS_UNITS = { mg: 0.001, g: 1, kg: 1000 } as const;
 export const VOLUME_UNITS = { ml: 1, l: 1000, tsp: 5, tbsp: 15, cup: 250 } as const;
-export const COUNT_UNITS = ['each', 'can', 'pack', 'clove', 'slice', 'bunch'] as const;
+export const COUNT_UNITS = ['each', 'can', 'pack', 'clove', 'slice', 'bunch', 'jar', 'head', 'stalk', 'rasher', 'scoop', 'sheet', 'box', 'block', 'bulb', 'handful'] as const;
 
 export type MassUnit = keyof typeof MASS_UNITS;
 export type VolumeUnit = keyof typeof VOLUME_UNITS;
@@ -89,6 +89,7 @@ export function niceQuantity(q: number, unit: QuantityUnit): number {
 }
 
 export function formatQuantity(q: number, unit: string): string {
+  if (q === 0) return '';
   const v = Number.isInteger(q) ? String(q) : q.toFixed(2).replace(/0+$/, '').replace(/\.$/, '');
   return `${v} ${unit}`;
 }

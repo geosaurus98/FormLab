@@ -1,8 +1,9 @@
 import { z } from 'zod';
-import { DataSourceSchema } from '../shared/provenance';
+import { DataQualitySchema, DataSourceSchema } from '../shared/provenance';
+import { NutrientsSchema } from '../nutrition/nutrients';
 import { ALL_UNITS, COUNT_UNITS, type QuantityUnit } from '../../lib/units';
 
-export const APPLIANCES = ['stovetop', 'oven', 'rice-cooker', 'slow-cooker', 'pressure-cooker', 'air-fryer', 'microwave'] as const;
+export const APPLIANCES = ['stovetop', 'oven', 'rice-cooker', 'slow-cooker', 'pressure-cooker', 'air-fryer', 'microwave', 'bread-maker'] as const;
 export const ApplianceIdSchema = z.enum(APPLIANCES);
 export type ApplianceId = z.infer<typeof ApplianceIdSchema>;
 export const APPLIANCE_LABEL: Record<ApplianceId, string> = {
@@ -12,7 +13,8 @@ export const APPLIANCE_LABEL: Record<ApplianceId, string> = {
   'slow-cooker': 'Slow cooker',
   'pressure-cooker': 'Pressure cooker (Instant Pot)',
   'air-fryer': 'Air fryer',
-  microwave: 'Microwave'
+  microwave: 'Microwave',
+  'bread-maker': 'Bread maker'
 };
 
 export const GROCERY_CATEGORIES = ['Produce', 'Meat', 'Dairy & eggs', 'Bakery', 'Pantry', 'Tins & jars', 'Spices', 'Frozen', 'Other'] as const;
@@ -78,6 +80,19 @@ export const VALIDATION_LABEL: Record<ValidationStatus, string> = {
   blocked: 'Blocked'
 };
 
+/**
+ * Nutrition stated by an outside source (e.g. the recipe book's own estimate), kept separate from
+ * FormLab's ingredient-based calculation and always shown with its source and quality.
+ */
+export const DeclaredNutritionSchema = z.object({
+  /** what one portion is, e.g. "serving" or "slice" */
+  perLabel: z.string(),
+  nutrients: NutrientsSchema,
+  source: z.string(),
+  quality: DataQualitySchema
+});
+export type DeclaredNutrition = z.infer<typeof DeclaredNutritionSchema>;
+
 /** An immutable snapshot of a recipe's cookable content. Edits create a new version. */
 export const RecipeVersionSchema = z.object({
   id: z.string(),
@@ -94,6 +109,8 @@ export const RecipeVersionSchema = z.object({
   equipment: z.array(z.string()).default([]),
   steps: z.array(RecipeStepSchema),
   validation: ValidationStatusSchema,
+  /** optional outside estimate (older records don't have this field) */
+  declaredNutrition: DeclaredNutritionSchema.nullable().optional(),
   changeSummary: z.string().default(''),
   changeReason: z.string().default(''),
   createdAt: z.string()

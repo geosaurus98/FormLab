@@ -15,6 +15,7 @@ const FoodEditorPage = lazy(() => import('./features/food/FoodsPage').then((m) =
 const FoodsPage = lazy(() => import('./features/food/FoodsPage').then((m) => ({ default: m.FoodsPage })));
 const RecipesPage = lazy(() => import('./features/recipes/RecipesPage').then((m) => ({ default: m.RecipesPage })));
 const RecipeDetailPage = lazy(() => import('./features/recipes/RecipeDetailPage').then((m) => ({ default: m.RecipeDetailPage })));
+const RecipeImportPage = lazy(() => import('./features/recipes/RecipeImportPage').then((m) => ({ default: m.RecipeImportPage })));
 const RecipeEditorPage = lazy(() => import('./features/recipes/RecipeEditorPage').then((m) => ({ default: m.RecipeEditorPage })));
 const CookingModePage = lazy(() => import('./features/recipes/CookingModePage').then((m) => ({ default: m.CookingModePage })));
 const PlannerPage = lazy(() => import('./features/planner/PlannerPage').then((m) => ({ default: m.PlannerPage })));
@@ -57,6 +58,7 @@ const router = createBrowserRouter([
       { path: '/foods/:id', element: <FoodEditorPage /> },
       { path: '/recipes', element: <RecipesPage /> },
       { path: '/recipes/new', element: <RecipeEditorPage /> },
+      { path: '/recipes/import', element: <RecipeImportPage /> },
       { path: '/recipes/:id', element: <RecipeDetailPage /> },
       { path: '/recipes/:id/edit', element: <RecipeEditorPage /> },
       { path: '/recipes/:id/cook', element: <CookingModePage /> },

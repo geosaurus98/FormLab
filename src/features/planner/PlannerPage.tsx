@@ -10,7 +10,10 @@ import { CookNav } from '../recipes/RecipesPage';
 import { usePrefs, useToday, useNutritionLookup } from '../../hooks/data';
 import { addPlanEntry, createPlan, generateGroceryList, recipeCandidates, removePlanEntry, updatePlanEntry } from '../../db/plannerService';
 import { recommendMeals, type PlanConstraints, type ScoredRecipe } from '../../domain/planner/recommend';
-import { calculateRecipeNutrition } from '../../domain/recipes/nutrition';
+import { calculateRecipeNutrition, servingNutrition } from '../../domain/recipes/nutrition';
+import type { Nutrients } from '../../domain/nutrition/nutrients';
+
+type PlanNutrition = { perServing: Nutrients; complete: boolean };
 import { addDays, dateRange, formatDateKey, startOfWeek } from '../../lib/dates';
 import { formatNZD } from '../../lib/utils';
 import type { MealPlan, MealPlanEntry } from '../../domain/planner/mealPlan';
@@ -46,7 +49,9 @@ export function PlannerPage() {
   const vmap = useMemo(() => new Map((versions ?? []).map((v) => [v.id, v])), [versions]);
   const entryNutrition = (e: MealPlanEntry) => {
     const v = vmap.get(e.recipeVersionId);
-    return v && lookup ? calculateRecipeNutrition(v, lookup) : null;
+    if (!v || !lookup) return null;
+    const sn = servingNutrition(calculateRecipeNutrition(v, lookup), v.declaredNutrition);
+    return { perServing: sn.perServing, complete: !sn.incomplete };
   };
 
   if (!plans) return null;
@@ -145,7 +150,7 @@ export function PlannerPage() {
   );
 }
 
-function PlanSummary({ plan, nutrition }: { plan: MealPlan; nutrition: (e: MealPlanEntry) => ReturnType<typeof calculateRecipeNutrition> | null }) {
+function PlanSummary({ plan, nutrition }: { plan: MealPlan; nutrition: (e: MealPlanEntry) => PlanNutrition | null }) {
   const cooks = plan.entries.filter((e) => !e.leftoverOfEntryId).length;
   const servings = plan.entries.reduce((s, e) => s + e.servings, 0);
   const protein = plan.entries.reduce((s, e) => s + (nutrition(e)?.perServing.proteinG ?? 0) * e.servings, 0);
@@ -159,7 +164,7 @@ function PlanSummary({ plan, nutrition }: { plan: MealPlan; nutrition: (e: MealP
   );
 }
 
-function EntryRow({ plan, entry, name, nutrition }: { plan: MealPlan; entry: MealPlanEntry; name: string; nutrition: ReturnType<typeof calculateRecipeNutrition> | null }) {
+function EntryRow({ plan, entry, name, nutrition }: { plan: MealPlan; entry: MealPlanEntry; name: string; nutrition: PlanNutrition | null }) {
   const [open, setOpen] = useState(false);
   const [servings, setServings] = useState<number | null>(entry.servings);
   const [leftoverDate, setLeftoverDate] = useState<string>(entry.date ? addDays(entry.date, 1) : '');
@@ -263,7 +268,7 @@ function RecommendSheet({ open, onClose, plan }: { open: boolean; onClose: () =>
       .filter(Boolean)
       .flatMap((term) => ingredients.filter((i) => i.name.toLowerCase().includes(term)).map((i) => i.id));
     const k: PlanConstraints = { availableAppliances: prefs.appliances, excludedTags: prefs.excludedTags, excludedIngredientIds: excludedIds, maxTotalMinutes: maxMinutes, maxCostPerServing: maxCost, minProteinPerServing: minProtein, maxSatFatPerServing: prefs.maxSatFatPerServingG };
-    const r = recommendMeals(await recipeCandidates(), k, ingMap, count ?? 4);
+    const r = recommendMeals(await recipeCandidates({ categories: ['main'] }), k, ingMap, count ?? 4);
     setResult(r);
     setChosen(new Set(r.picks.map((p) => p.candidate.recipe.id)));
   };

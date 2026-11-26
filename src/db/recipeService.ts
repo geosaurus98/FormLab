@@ -1,7 +1,7 @@
 import { db } from './db';
-import { calculateRecipeNutrition, type NutritionLookup, type RecipeNutrition } from '../domain/recipes/nutrition';
+import { calculateRecipeNutrition, servingNutrition, type NutritionLookup, type RecipeNutrition } from '../domain/recipes/nutrition';
 import { contentEquals, contentOf, createVersion, type VersionContent } from '../domain/recipes/versions';
-import { RecipeSchema, RecipeVersionSchema, type CookingSession, type Recipe, type RecipeFeedback, type RecipeVersion } from '../domain/recipes/types';
+import { RecipeSchema, RecipeVersionSchema, type CookingSession, type DeclaredNutrition, type Recipe, type RecipeFeedback, type RecipeVersion } from '../domain/recipes/types';
 import { newId } from '../lib/id';
 import { nowIso } from '../lib/utils';
 import type { RecipeServingSnapshot } from '../domain/nutrition/diary';
@@ -23,14 +23,19 @@ export async function recipeServingSnapshot(recipeId: string, versionId?: string
   if (!recipe) throw new Error('Recipe not found');
   const res = await versionNutrition(versionId ?? recipe.currentVersionId);
   if (!res) throw new Error('Recipe version not found');
-  return {
-    recipeId,
-    recipeVersionId: res.version.id,
-    versionNumber: res.version.versionNumber,
-    name: res.version.branch === 'main' ? recipe.name : `${recipe.name} (${res.version.branch})`,
-    perServing: res.nutrition.perServing,
-    incomplete: !res.nutrition.complete
-  };
+  const name = res.version.branch === 'main' ? recipe.name : `${recipe.name} (${res.version.branch})`;
+  const base = { recipeId, recipeVersionId: res.version.id, versionNumber: res.version.versionNumber, name };
+  return chooseServingNutrition(res.nutrition, res.version.declaredNutrition ?? null, base);
+}
+
+/**
+ * Picks what to log for one serving. FormLab's ingredient calculation wins when it is complete for
+ * energy and protein; otherwise a declared outside estimate (e.g. the recipe book's) is used and
+ * labelled as such. With neither, the incomplete calculation is logged and flagged.
+ */
+export function chooseServingNutrition(nutrition: RecipeNutrition, declared: DeclaredNutrition | null, base: Pick<RecipeServingSnapshot, 'recipeId' | 'recipeVersionId' | 'versionNumber' | 'name'>): RecipeServingSnapshot {
+  const s = servingNutrition(nutrition, declared);
+  return { ...base, perServing: s.perServing, incomplete: s.incomplete, quality: s.quality, ...(s.basis === 'declared' ? { basisNote: 'recipe book estimate' } : {}) };
 }
 
 export interface RecipeDraft {
