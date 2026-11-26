@@ -1,7 +1,7 @@
 import { db } from './db';
 import { calculateRecipeNutrition, type NutritionLookup, type RecipeNutrition } from '../domain/recipes/nutrition';
 import { contentEquals, contentOf, createVersion, type VersionContent } from '../domain/recipes/versions';
-import { RecipeSchema, RecipeVersionSchema, type CookingSession, type Recipe, type RecipeFeedback, type RecipeVersion } from '../domain/recipes/types';
+import { RecipeSchema, RecipeVersionSchema, type CookingSession, type DeclaredNutrition, type Recipe, type RecipeFeedback, type RecipeVersion } from '../domain/recipes/types';
 import { newId } from '../lib/id';
 import { nowIso } from '../lib/utils';
 import type { RecipeServingSnapshot } from '../domain/nutrition/diary';
@@ -23,14 +23,23 @@ export async function recipeServingSnapshot(recipeId: string, versionId?: string
   if (!recipe) throw new Error('Recipe not found');
   const res = await versionNutrition(versionId ?? recipe.currentVersionId);
   if (!res) throw new Error('Recipe version not found');
-  return {
-    recipeId,
-    recipeVersionId: res.version.id,
-    versionNumber: res.version.versionNumber,
-    name: res.version.branch === 'main' ? recipe.name : `${recipe.name} (${res.version.branch})`,
-    perServing: res.nutrition.perServing,
-    incomplete: !res.nutrition.complete
-  };
+  const name = res.version.branch === 'main' ? recipe.name : `${recipe.name} (${res.version.branch})`;
+  const base = { recipeId, recipeVersionId: res.version.id, versionNumber: res.version.versionNumber, name };
+  return chooseServingNutrition(res.nutrition, res.version.declaredNutrition ?? null, base);
+}
+
+/**
+ * Picks what to log for one serving. FormLab's ingredient calculation wins when it is complete for
+ * energy and protein; otherwise a declared outside estimate (e.g. the recipe book's) is used and
+ * labelled as such. With neither, the incomplete calculation is logged and flagged.
+ */
+export function chooseServingNutrition(nutrition: RecipeNutrition, declared: DeclaredNutrition | null, base: Pick<RecipeServingSnapshot, 'recipeId' | 'recipeVersionId' | 'versionNumber' | 'name'>): RecipeServingSnapshot {
+  const calcOk = nutrition.total.missing.energyKcal === 0 && nutrition.total.missing.proteinG === 0 && nutrition.total.itemCount > 0;
+  if (!calcOk && declared && declared.nutrients.energyKcal != null) {
+    const n = declared.nutrients;
+    return { ...base, perServing: n, incomplete: n.proteinG == null || n.carbsG == null || n.fatG == null, quality: declared.quality, basisNote: 'recipe book estimate' };
+  }
+  return { ...base, perServing: nutrition.perServing, incomplete: !nutrition.complete, quality: 'calculated' };
 }
 
 export interface RecipeDraft {

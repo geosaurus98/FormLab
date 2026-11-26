@@ -12,7 +12,7 @@ import type { Preferences } from '../domain/shared/preferences';
 
 export interface ImportRecord {
   id: string;
-  kind: 'backup-restore' | 'food-csv' | 'activity-import';
+  kind: 'backup-restore' | 'food-csv' | 'activity-import' | 'recipe-book';
   at: string;
   fileName: string;
   counts: Record<string, number>;

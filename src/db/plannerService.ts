@@ -60,11 +60,16 @@ export async function updateGroceryList(list: GroceryList): Promise<void> {
 }
 
 /** Builds recommendation candidates for all active recipes (current main version). */
-export async function recipeCandidates(): Promise<RecipeCandidate[]> {
+/** Categories that make sense as a planned meal (imported baking, bread, desserts etc. are excluded). */
+export const MEAL_CATEGORIES = ['main', 'breakfast'];
+export const SNACK_CATEGORIES = ['side', 'snack', 'shake'];
+
+export async function recipeCandidates(opts: { categories?: string[] } = {}): Promise<RecipeCandidate[]> {
   const [recipes, lookup, feedback, cooking, plans] = await Promise.all([db.recipes.toArray(), loadNutritionLookup(), db.recipeFeedback.toArray(), db.cookingSessions.toArray(), db.mealPlans.toArray()]);
   const today = toDateKey();
   const out: RecipeCandidate[] = [];
-  for (const recipe of recipes.filter((r) => !r.archived)) {
+  const allowed = opts.categories?.map((c) => c.toLowerCase());
+  for (const recipe of recipes.filter((r) => !r.archived && (!allowed || allowed.includes((r.category || 'main').toLowerCase())))) {
     const version = await db.recipeVersions.get(recipe.currentVersionId);
     if (!version) continue;
     const n = calculateRecipeNutrition(version, lookup);

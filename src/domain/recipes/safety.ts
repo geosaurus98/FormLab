@@ -36,6 +36,7 @@ const totalLiquidMl = (v: Pick<RecipeVersion, 'ingredients'>, ings: Map<string, 
 const approxVolumeLitres = (v: Pick<RecipeVersion, 'ingredients'>, ings: Map<string, Ingredient>) => {
   let litres = 0;
   for (const ri of v.ingredients) {
+    if (ri.optional) continue; // serving extras don't go in the pot
     const ing = ings.get(ri.ingredientId);
     const b = toBase(ri.quantity, ri.unit);
     if (b.unit === 'ml') litres += b.quantity / 1000;

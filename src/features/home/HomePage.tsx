@@ -13,7 +13,7 @@ import { nextTemplateInProgramme } from '../../domain/workouts/session';
 import { sessionVolume } from '../../domain/workouts/records';
 import { dailyWeights, rollingAverage, weightTrend } from '../../domain/body/body';
 import { suggestForRemaining, type RecipeCandidate } from '../../domain/planner/recommend';
-import { recipeCandidates } from '../../db/plannerService';
+import { MEAL_CATEGORIES, SNACK_CATEGORIES, recipeCandidates } from '../../db/plannerService';
 import { startWorkout } from '../../db/workoutService';
 import { logRecipe } from '../../db/foodService';
 import { addDays, formatDateKey, formatDuration, isoToDateKey, relativeDayLabel, startOfWeek, daysBetween } from '../../lib/dates';
@@ -43,7 +43,7 @@ export function HomePage() {
   const toast = useToast();
   const { fmt, unit } = useEnergy();
   const mass = useMassUnit();
-  useEffect(() => void recipeCandidates().then(setCandidates), [recipes]);
+  useEffect(() => void recipeCandidates({ categories: [...MEAL_CATEGORIES, ...SNACK_CATEGORIES] }).then(setCandidates), [recipes]);
 
   const totals = useMemo(() => dailyTotals(entries ?? []), [entries]);
   const exKcal = (cardioToday ?? []).reduce((s, c) => s + (c.energyEstimate?.kcal ?? 0), 0);

@@ -263,7 +263,7 @@ function RecommendSheet({ open, onClose, plan }: { open: boolean; onClose: () =>
       .filter(Boolean)
       .flatMap((term) => ingredients.filter((i) => i.name.toLowerCase().includes(term)).map((i) => i.id));
     const k: PlanConstraints = { availableAppliances: prefs.appliances, excludedTags: prefs.excludedTags, excludedIngredientIds: excludedIds, maxTotalMinutes: maxMinutes, maxCostPerServing: maxCost, minProteinPerServing: minProtein, maxSatFatPerServing: prefs.maxSatFatPerServingG };
-    const r = recommendMeals(await recipeCandidates(), k, ingMap, count ?? 4);
+    const r = recommendMeals(await recipeCandidates({ categories: ['main'] }), k, ingMap, count ?? 4);
     setResult(r);
     setChosen(new Set(r.picks.map((p) => p.candidate.recipe.id)));
   };

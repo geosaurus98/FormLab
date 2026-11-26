@@ -1,0 +1,1263 @@
+[
+ {
+  "title": "Beef & Lentil Bolognese",
+  "servings": "4",
+  "time": "50 min",
+  "intro": "A high-protein bolognese in which lentils stretch the mince, lower the cost and make the sauce properly substantial. Tomatoes go in on top, unstirred, to avoid the “burn” warning.",
+  "sections": [
+   {
+    "kind": "ingredients",
+    "heading": "Ingredients",
+    "items": [
+     {
+      "group": "Sauce base"
+     },
+     {
+      "text": "600 g lean beef mince"
+     },
+     {
+      "text": "¾ cup dry brown or green lentils, rinsed (or see the swaps below)"
+     },
+     {
+      "text": "1 onion, diced"
+     },
+     {
+      "text": "3 garlic cloves, crushed"
+     },
+     {
+      "text": "1 cup beef stock"
+     },
+     {
+      "text": "2 cans crushed tomatoes"
+     },
+     {
+      "text": "2 tbsp tomato paste"
+     },
+     {
+      "text": "1 tsp dried oregano"
+     },
+     {
+      "text": "1 tsp dried basil"
+     },
+     {
+      "text": "½ tsp dried thyme"
+     },
+     {
+      "text": "¼ tsp dried rosemary, crushed"
+     },
+     {
+      "text": "1 tsp smoked paprika"
+     },
+     {
+      "text": "1 tsp Worcestershire sauce"
+     },
+     {
+      "text": "Salt and pepper, to taste"
+     },
+     {
+      "group": "To finish"
+     },
+     {
+      "text": "400 g frozen mixed vegetables"
+     },
+     {
+      "group": "To serve"
+     },
+     {
+      "text": "350 g wholemeal or regular pasta"
+     }
+    ]
+   },
+   {
+    "kind": "steps",
+    "heading": "Method",
+    "items": [
+     {
+      "text": "**Sauté the onion.** Select Sauté, add a small amount of oil and cook the onion for 3 minutes."
+     },
+     {
+      "text": "**Brown the mince.** Add the mince and cook until browned, breaking it apart as it cooks."
+     },
+     {
+      "text": "**Add the aromatics.** Stir in the garlic, oregano, basil, thyme, rosemary and paprika. Cook for another 30 seconds."
+     },
+     {
+      "text": "**Deglaze.** Pour in the stock and scrape the base of the pot thoroughly."
+     },
+     {
+      "text": "**Layer.** Stir in the lentils and Worcestershire sauce. Pour the crushed tomatoes and tomato paste over the top **without stirring**."
+     },
+     {
+      "text": "**Pressure cook.** Lid on, valve sealed. Pressure Cook on High for **10 minutes**, then **natural release** for 10 minutes."
+     },
+     {
+      "text": "**Finish.** Stir in the frozen vegetables and use Sauté for 5 minutes. Add a splash of water if the sauce is too thick. Season to taste."
+     },
+     {
+      "text": "**Pasta.** Meanwhile, cook the pasta separately and divide into four servings. Top with the sauce."
+     }
+    ]
+   },
+   {
+    "kind": "notes",
+    "heading": "Notes",
+    "items": [
+     {
+      "text": "Roughly 46–50 g protein per serving with 600 g mince (42–46 g at 500 g). The herb blend replaces 2 tsp of Italian herbs: oregano and basil carry the flavour, with thyme and rosemary kept light as they are stronger."
+     }
+    ]
+   },
+   {
+    "kind": "variation",
+    "heading": "Lentil swaps",
+    "text": "**Canned brown lentils:** use 2 cans (400 g), drained and rinsed. They're already cooked, so leave them out of the pot: use only ½ cup stock, pressure cook for **5 minutes** with a 5-minute natural release, then stir the lentils in with the frozen vegetables. **Red lentils:** use ¾ cup dry split red lentils, rinsed, and add ½ cup extra water with the stock. Pressure cook for **8 minutes** with a 10-minute natural release. They melt into the sauce, so it's thicker and smoother, with less lentil texture.",
+    "sections": []
+   },
+   {
+    "kind": "variation",
+    "heading": "Big Batch Sauce (6 serves)",
+    "text": "For a week of meal prep, use 600 g lean beef mince and 1 cup dry split red lentils, 600 g frozen mixed vegetables plus 300 g frozen broccoli and cauliflower, 2 cans of tomatoes, 3 tbsp tomato paste, 1 cup water and 2 tbsp Italian herbs. Sauté the onion, garlic and mince, add everything else (vegetables before the tomatoes, unstirred), and pressure cook for **15 minutes** with a 10-minute natural release. Portion into 6 containers; cook pasta fresh for each meal (50–90 g dry per serve). Keeps 4 days in the fridge, or freeze.",
+    "sections": []
+   },
+   {
+    "kind": "variation",
+    "heading": "Lentils Only",
+    "text": "Leave out the mince and use 2½ cups dry split red lentils with the big-batch vegetables and 1½ cups water. Same timing. The lentils soften completely into the sauce.",
+    "sections": []
+   }
+  ],
+  "id": "InstantPot-Beef_Lentil_Bolognese",
+  "file": "InstantPot/Beef_Lentil_Bolognese.tex",
+  "chapter": "pressure",
+  "chapterName": "Instant Pot & Pressure Cooker",
+  "group": null,
+  "ingredients": [
+   "600 g lean beef mince",
+   "¾ cup dry brown or green lentils, rinsed (or see the swaps below)",
+   "1 onion, diced",
+   "3 garlic cloves, crushed",
+   "1 cup beef stock",
+   "2 cans crushed tomatoes",
+   "2 tbsp tomato paste",
+   "1 tsp dried oregano",
+   "1 tsp dried basil",
+   "½ tsp dried thyme",
+   "¼ tsp dried rosemary, crushed",
+   "1 tsp smoked paprika",
+   "1 tsp Worcestershire sauce",
+   "Salt and pepper, to taste",
+   "400 g frozen mixed vegetables",
+   "350 g wholemeal or regular pasta"
+  ],
+  "shop": [
+   {
+    "key": "beef-mince",
+    "name": "Beef mince",
+    "aisle": "Meat & fish",
+    "qty": 600.0,
+    "unit": "g",
+    "optional": false,
+    "raw": "600 g lean beef mince",
+    "g": 600.0
+   },
+   {
+    "key": "lentils",
+    "name": "Lentils",
+    "aisle": "Cans, jars & pulses",
+    "qty": 0.75,
+    "unit": "cup",
+    "optional": false,
+    "raw": "¾ cup dry brown or green lentils, rinsed (or see the swaps below)",
+    "g": 142.5
+   },
+   {
+    "key": "onion",
+    "name": "Onions",
+    "aisle": "Fruit & veg",
+    "qty": 1.0,
+    "unit": "",
+    "optional": false,
+    "raw": "1 onion, diced",
+    "g": 150.0
+   },
+   {
+    "key": "garlic",
+    "name": "Garlic",
+    "aisle": "Fruit & veg",
+    "qty": 3.0,
+    "unit": "clove",
+    "optional": false,
+    "raw": "3 garlic cloves, crushed",
+    "g": 15.0
+   },
+   {
+    "key": "beef-stock",
+    "name": "Beef stock",
+    "aisle": "Pantry: check first",
+    "qty": 1.0,
+    "unit": "cup",
+    "optional": false,
+    "raw": "1 cup beef stock",
+    "g": 250.0
+   },
+   {
+    "key": "canned-tomatoes",
+    "name": "Canned tomatoes",
+    "aisle": "Cans, jars & pulses",
+    "qty": 2.0,
+    "unit": "can",
+    "optional": false,
+    "raw": "2 cans crushed tomatoes",
+    "g": 800.0
+   },
+   {
+    "key": "tomato-paste",
+    "name": "Tomato paste",
+    "aisle": "Cans, jars & pulses",
+    "qty": 2.0,
+    "unit": "tbsp",
+    "optional": false,
+    "raw": "2 tbsp tomato paste",
+    "g": 32.0
+   },
+   {
+    "key": "oregano",
+    "name": "Dried oregano",
+    "aisle": "Pantry: check first",
+    "qty": 1.0,
+    "unit": "tsp",
+    "optional": false,
+    "raw": "1 tsp dried oregano",
+    "g": 2.5
+   },
+   {
+    "key": "basil",
+    "name": "Fresh basil",
+    "aisle": "Fruit & veg",
+    "qty": 1.0,
+    "unit": "tsp",
+    "optional": false,
+    "raw": "1 tsp dried basil",
+    "g": 1.0
+   },
+   {
+    "key": "thyme",
+    "name": "Dried thyme",
+    "aisle": "Pantry: check first",
+    "qty": 0.5,
+    "unit": "tsp",
+    "optional": false,
+    "raw": "½ tsp dried thyme",
+    "g": 1.2
+   },
+   {
+    "key": "rosemary",
+    "name": "Rosemary",
+    "aisle": "Pantry: check first",
+    "qty": 0.25,
+    "unit": "tsp",
+    "optional": false,
+    "raw": "¼ tsp dried rosemary, crushed",
+    "g": 0.6
+   },
+   {
+    "key": "smoked-paprika",
+    "name": "Smoked paprika",
+    "aisle": "Pantry: check first",
+    "qty": 1.0,
+    "unit": "tsp",
+    "optional": false,
+    "raw": "1 tsp smoked paprika",
+    "g": 2.5
+   },
+   {
+    "key": "worcestershire",
+    "name": "Worcestershire sauce",
+    "aisle": "Pantry: check first",
+    "qty": 1.0,
+    "unit": "tsp",
+    "optional": false,
+    "raw": "1 tsp Worcestershire sauce",
+    "g": 6.0
+   },
+   {
+    "key": "salt",
+    "name": "Salt",
+    "aisle": "Pantry: check first",
+    "qty": null,
+    "unit": "",
+    "optional": true,
+    "raw": "Salt and pepper, to taste"
+   },
+   {
+    "key": "pepper",
+    "name": "Black pepper",
+    "aisle": "Pantry: check first",
+    "qty": null,
+    "unit": "",
+    "optional": true,
+    "raw": "Salt and pepper, to taste"
+   },
+   {
+    "key": "frozen-mixed-veg",
+    "name": "Frozen mixed vegetables",
+    "aisle": "Frozen",
+    "qty": 400.0,
+    "unit": "g",
+    "optional": false,
+    "raw": "400 g frozen mixed vegetables",
+    "g": 400.0
+   },
+   {
+    "key": "pasta",
+    "name": "Pasta",
+    "aisle": "Pasta, rice & grains",
+    "qty": 350.0,
+    "unit": "g",
+    "optional": false,
+    "raw": "350 g wholemeal or regular pasta",
+    "g": 350.0
+   }
+  ],
+  "tags": [
+   "beef",
+   "mince"
+  ],
+  "nutrition": {
+   "kcal": 860,
+   "protein": 56,
+   "carbs": 105,
+   "fat": 21,
+   "per": "serving",
+   "count": 4
+  },
+  "diet": [
+   "freezes",
+   "dairy-free"
+  ],
+  "storage": [
+   "Keeps 4 days in the fridge, or freeze."
+  ],
+  "minutes": 50,
+  "ahead": [],
+  "meat": "Beef mince",
+  "palmer": false
+ },
+ {
+  "title": "Chilli Con Carne with Red Lentils & Kidney Beans",
+  "servings": "4",
+  "time": "15 min prep + 6–8 hr (low)",
+  "intro": "A proper slow-cooked chilli. Red lentils melt into the sauce and make it thick and rich. Roughly 40–42 g protein per serve.",
+  "sections": [
+   {
+    "kind": "ingredients",
+    "heading": "Ingredients",
+    "items": [
+     {
+      "text": "500 g lean beef mince"
+     },
+     {
+      "text": "1 onion, diced"
+     },
+     {
+      "text": "1 capsicum, diced"
+     },
+     {
+      "text": "3 garlic cloves, crushed"
+     },
+     {
+      "text": "2 tsp chilli powder (or to taste)"
+     },
+     {
+      "text": "2 tsp ground cumin"
+     },
+     {
+      "text": "1 tsp smoked paprika"
+     },
+     {
+      "text": "1 tsp dried oregano"
+     },
+     {
+      "text": "½ cup dry red lentils, rinsed"
+     },
+     {
+      "text": "2 cans kidney beans, drained and rinsed"
+     },
+     {
+      "text": "1 can crushed tomatoes"
+     },
+     {
+      "text": "2 tbsp tomato paste"
+     },
+     {
+      "text": "1 cup beef stock"
+     },
+     {
+      "text": "1 tsp cocoa powder (optional — adds depth)"
+     },
+     {
+      "text": "Salt and pepper"
+     },
+     {
+      "group": "To serve"
+     },
+     {
+      "text": "Rice or baked potatoes, Greek yoghurt, grated cheese, coriander"
+     }
+    ]
+   },
+   {
+    "kind": "steps",
+    "heading": "Method",
+    "items": [
+     {
+      "text": "**Brown the mince.** In a frying pan, brown the mince with the onion and capsicum. Add the garlic and spices for the last minute."
+     },
+     {
+      "text": "**Load the slow cooker.** Tip into the slow cooker and stir in the lentils, beans, tomatoes, tomato paste, stock and cocoa."
+     },
+     {
+      "text": "**Slow cook.** Cook on Low for 6–8 hours (or High for 3–4)."
+     },
+     {
+      "text": "Season to taste, loosen with a splash of water if needed, and serve with rice or potatoes and toppings."
+     }
+    ]
+   },
+   {
+    "kind": "notes",
+    "heading": "Notes",
+    "items": [
+     {
+      "text": "Freezes brilliantly — portion leftovers for nachos, jacket potatoes or burritos."
+     },
+     {
+      "text": "For a quicker version, see Beef & Vegetable Chilli (Stovetop) or Beef & Mixed Bean Chilli (Instant Pot)."
+     }
+    ]
+   }
+  ],
+  "id": "SlowCooker-Chilli_Con_Carne_Red_Lentils",
+  "file": "SlowCooker/Chilli_Con_Carne_Red_Lentils.tex",
+  "chapter": "slow",
+  "chapterName": "Slow Cooker",
+  "group": null,
+  "ingredients": [
+   "500 g lean beef mince",
+   "1 onion, diced",
+   "1 capsicum, diced",
+   "3 garlic cloves, crushed",
+   "2 tsp chilli powder (or to taste)",
+   "2 tsp ground cumin",
+   "1 tsp smoked paprika",
+   "1 tsp dried oregano",
+   "½ cup dry red lentils, rinsed",
+   "2 cans kidney beans, drained and rinsed",
+   "1 can crushed tomatoes",
+   "2 tbsp tomato paste",
+   "1 cup beef stock",
+   "1 tsp cocoa powder (optional — adds depth)",
+   "Salt and pepper",
+   "Rice or baked potatoes, Greek yoghurt, grated cheese, coriander"
+  ],
+  "shop": [
+   {
+    "key": "beef-mince",
+    "name": "Beef mince",
+    "aisle": "Meat & fish",
+    "qty": 500.0,
+    "unit": "g",
+    "optional": false,
+    "raw": "500 g lean beef mince",
+    "g": 500.0
+   },
+   {
+    "key": "onion",
+    "name": "Onions",
+    "aisle": "Fruit & veg",
+    "qty": 1.0,
+    "unit": "",
+    "optional": false,
+    "raw": "1 onion, diced",
+    "g": 150.0
+   },
+   {
+    "key": "capsicum",
+    "name": "Capsicums",
+    "aisle": "Fruit & veg",
+    "qty": 1.0,
+    "unit": "",
+    "optional": false,
+    "raw": "1 capsicum, diced",
+    "g": 160.0
+   },
+   {
+    "key": "garlic",
+    "name": "Garlic",
+    "aisle": "Fruit & veg",
+    "qty": 3.0,
+    "unit": "clove",
+    "optional": false,
+    "raw": "3 garlic cloves, crushed",
+    "g": 15.0
+   },
+   {
+    "key": "chilli-powder",
+    "name": "Chilli powder",
+    "aisle": "Pantry: check first",
+    "qty": 2.0,
+    "unit": "tsp",
+    "optional": false,
+    "raw": "2 tsp chilli powder (or to taste)",
+    "g": 5.0
+   },
+   {
+    "key": "cumin",
+    "name": "Ground cumin",
+    "aisle": "Pantry: check first",
+    "qty": 2.0,
+    "unit": "tsp",
+    "optional": false,
+    "raw": "2 tsp ground cumin",
+    "g": 5.0
+   },
+   {
+    "key": "smoked-paprika",
+    "name": "Smoked paprika",
+    "aisle": "Pantry: check first",
+    "qty": 1.0,
+    "unit": "tsp",
+    "optional": false,
+    "raw": "1 tsp smoked paprika",
+    "g": 2.5
+   },
+   {
+    "key": "oregano",
+    "name": "Dried oregano",
+    "aisle": "Pantry: check first",
+    "qty": 1.0,
+    "unit": "tsp",
+    "optional": false,
+    "raw": "1 tsp dried oregano",
+    "g": 2.5
+   },
+   {
+    "key": "red-lentils",
+    "name": "Red lentils (dry)",
+    "aisle": "Cans, jars & pulses",
+    "qty": 0.5,
+    "unit": "cup",
+    "optional": false,
+    "raw": "½ cup dry red lentils, rinsed",
+    "g": 95.0
+   },
+   {
+    "key": "kidney-beans",
+    "name": "Kidney beans",
+    "aisle": "Cans, jars & pulses",
+    "qty": 2.0,
+    "unit": "can",
+    "optional": false,
+    "raw": "2 cans kidney beans, drained and rinsed",
+    "g": 480.0
+   },
+   {
+    "key": "canned-tomatoes",
+    "name": "Canned tomatoes",
+    "aisle": "Cans, jars & pulses",
+    "qty": 1.0,
+    "unit": "can",
+    "optional": false,
+    "raw": "1 can crushed tomatoes",
+    "g": 400.0
+   },
+   {
+    "key": "tomato-paste",
+    "name": "Tomato paste",
+    "aisle": "Cans, jars & pulses",
+    "qty": 2.0,
+    "unit": "tbsp",
+    "optional": false,
+    "raw": "2 tbsp tomato paste",
+    "g": 32.0
+   },
+   {
+    "key": "beef-stock",
+    "name": "Beef stock",
+    "aisle": "Pantry: check first",
+    "qty": 1.0,
+    "unit": "cup",
+    "optional": false,
+    "raw": "1 cup beef stock",
+    "g": 250.0
+   },
+   {
+    "key": "cocoa",
+    "name": "Cocoa powder",
+    "aisle": "Baking",
+    "qty": 1.0,
+    "unit": "tsp",
+    "optional": true,
+    "raw": "1 tsp cocoa powder (optional — adds depth)",
+    "g": 2.0
+   },
+   {
+    "key": "salt",
+    "name": "Salt",
+    "aisle": "Pantry: check first",
+    "qty": null,
+    "unit": "",
+    "optional": true,
+    "raw": "Salt and pepper"
+   },
+   {
+    "key": "pepper",
+    "name": "Black pepper",
+    "aisle": "Pantry: check first",
+    "qty": null,
+    "unit": "",
+    "optional": true,
+    "raw": "Salt and pepper"
+   },
+   {
+    "key": "rice",
+    "name": "Rice",
+    "aisle": "Pasta, rice & grains",
+    "qty": null,
+    "unit": "",
+    "optional": true,
+    "raw": "Rice or baked potatoes, Greek yoghurt, grated cheese, coriander"
+   },
+   {
+    "key": "potato",
+    "name": "Potatoes",
+    "aisle": "Fruit & veg",
+    "qty": null,
+    "unit": "",
+    "optional": true,
+    "raw": "Rice or baked potatoes, Greek yoghurt, grated cheese, coriander"
+   },
+   {
+    "key": "greek-yoghurt",
+    "name": "Greek yoghurt",
+    "aisle": "Dairy, eggs & chilled",
+    "qty": null,
+    "unit": "",
+    "optional": true,
+    "raw": "Rice or baked potatoes, Greek yoghurt, grated cheese, coriander"
+   },
+   {
+    "key": "cheese",
+    "name": "Tasty cheese",
+    "aisle": "Dairy, eggs & chilled",
+    "qty": null,
+    "unit": "",
+    "optional": true,
+    "raw": "Rice or baked potatoes, Greek yoghurt, grated cheese, coriander"
+   },
+   {
+    "key": "coriander",
+    "name": "Fresh coriander",
+    "aisle": "Fruit & veg",
+    "qty": null,
+    "unit": "",
+    "optional": true,
+    "raw": "Rice or baked potatoes, Greek yoghurt, grated cheese, coriander"
+   }
+  ],
+  "tags": [
+   "beef",
+   "mince"
+  ],
+  "nutrition": {
+   "kcal": 520,
+   "protein": 42,
+   "carbs": 43,
+   "fat": 17,
+   "per": "serving",
+   "count": 4
+  },
+  "diet": [
+   "freezes",
+   "dairy-free"
+  ],
+  "storage": [
+   "Freezes brilliantly — portion leftovers for nachos, jacket potatoes or burritos."
+  ],
+  "minutes": 495,
+  "ahead": [],
+  "meat": "Beef mince",
+  "palmer": false
+ },
+ {
+  "title": "Lemon Herb Salmon Tray Bake",
+  "servings": "6",
+  "time": "10 min prep + 25 min",
+  "intro": "",
+  "sections": [
+   {
+    "kind": "ingredients",
+    "heading": "Ingredients",
+    "items": [
+     {
+      "text": "6 salmon fillets"
+     },
+     {
+      "text": "1 bunch broccolini"
+     },
+     {
+      "text": "1 bunch asparagus"
+     },
+     {
+      "text": "250 g cherry tomatoes"
+     },
+     {
+      "text": "2 tbsp olive oil"
+     },
+     {
+      "text": "Zest and juice of 2 lemons"
+     },
+     {
+      "text": "3 garlic cloves, minced"
+     },
+     {
+      "text": "Fresh dill or mixed herbs"
+     },
+     {
+      "text": "Salt and pepper"
+     },
+     {
+      "text": "**To serve:** roasted baby potatoes"
+     }
+    ]
+   },
+   {
+    "kind": "steps",
+    "heading": "Method",
+    "items": [
+     {
+      "text": "Preheat oven to 200°C."
+     },
+     {
+      "text": "Toss broccolini, asparagus, and cherry tomatoes in olive oil, salt and pepper. Spread across a large baking tray."
+     },
+     {
+      "text": "Place salmon fillets on top. Mix lemon zest, lemon juice, and garlic together and spoon over the salmon."
+     },
+     {
+      "text": "Season with fresh dill, salt, and pepper."
+     },
+     {
+      "text": "Bake for 20–25 minutes until salmon is cooked through and flakes easily."
+     },
+     {
+      "text": "Serve with roasted baby potatoes."
+     }
+    ]
+   },
+   {
+    "kind": "notes",
+    "heading": "Notes",
+    "items": [
+     {
+      "text": "**Tip:** Slightly pricier than other meals but worth it once a month. Watch for salmon on special at Pak'nSave or New World."
+     }
+    ]
+   }
+  ],
+  "id": "Oven-Lemon_Herb_Salmon_Tray_Bake",
+  "file": "Oven/Lemon_Herb_Salmon_Tray_Bake.tex",
+  "chapter": "oven",
+  "chapterName": "Oven",
+  "group": null,
+  "ingredients": [
+   "6 salmon fillets",
+   "1 bunch broccolini",
+   "1 bunch asparagus",
+   "250 g cherry tomatoes",
+   "2 tbsp olive oil",
+   "Zest and juice of 2 lemons",
+   "3 garlic cloves, minced",
+   "Fresh dill or mixed herbs",
+   "Salt and pepper",
+   "**To serve:** roasted baby potatoes"
+  ],
+  "shop": [
+   {
+    "key": "salmon",
+    "name": "Salmon",
+    "aisle": "Meat & fish",
+    "qty": 6.0,
+    "unit": "",
+    "optional": false,
+    "raw": "6 salmon fillets",
+    "g": 900.0
+   },
+   {
+    "key": "broccoli",
+    "name": "Broccoli",
+    "aisle": "Fruit & veg",
+    "qty": 1.0,
+    "unit": "bunch",
+    "optional": false,
+    "raw": "1 bunch broccolini",
+    "g": 350.0
+   },
+   {
+    "key": "asparagus",
+    "name": "Asparagus",
+    "aisle": "Fruit & veg",
+    "qty": 1.0,
+    "unit": "bunch",
+    "optional": false,
+    "raw": "1 bunch asparagus",
+    "g": 250.0
+   },
+   {
+    "key": "tomato",
+    "name": "Tomatoes",
+    "aisle": "Fruit & veg",
+    "qty": 250.0,
+    "unit": "g",
+    "optional": false,
+    "raw": "250 g cherry tomatoes",
+    "g": 250.0
+   },
+   {
+    "key": "olive-oil",
+    "name": "Olive oil",
+    "aisle": "Pantry: check first",
+    "qty": 2.0,
+    "unit": "tbsp",
+    "optional": false,
+    "raw": "2 tbsp olive oil",
+    "g": 27.0
+   },
+   {
+    "key": "lemon",
+    "name": "Lemons",
+    "aisle": "Fruit & veg",
+    "qty": 2.0,
+    "unit": "",
+    "optional": false,
+    "raw": "Zest and juice of 2 lemons",
+    "g": 80.0
+   },
+   {
+    "key": "garlic",
+    "name": "Garlic",
+    "aisle": "Fruit & veg",
+    "qty": 3.0,
+    "unit": "clove",
+    "optional": false,
+    "raw": "3 garlic cloves, minced",
+    "g": 15.0
+   },
+   {
+    "key": "mixed-herbs",
+    "name": "Mixed herbs",
+    "aisle": "Pantry: check first",
+    "qty": null,
+    "unit": "",
+    "optional": false,
+    "raw": "Fresh dill or mixed herbs"
+   },
+   {
+    "key": "salt",
+    "name": "Salt",
+    "aisle": "Pantry: check first",
+    "qty": null,
+    "unit": "",
+    "optional": true,
+    "raw": "Salt and pepper"
+   },
+   {
+    "key": "pepper",
+    "name": "Black pepper",
+    "aisle": "Pantry: check first",
+    "qty": null,
+    "unit": "",
+    "optional": true,
+    "raw": "Salt and pepper"
+   },
+   {
+    "key": "potato",
+    "name": "Potatoes",
+    "aisle": "Fruit & veg",
+    "qty": null,
+    "unit": "",
+    "optional": true,
+    "raw": "To serve: roasted baby potatoes"
+   }
+  ],
+  "tags": [
+   "fish"
+  ],
+  "nutrition": {
+   "kcal": 380,
+   "protein": 33,
+   "carbs": 9,
+   "fat": 24,
+   "per": "serving",
+   "count": 6
+  },
+  "diet": [
+   "dairy-free"
+  ],
+  "storage": [],
+  "minutes": 35,
+  "ahead": [],
+  "meat": "Salmon",
+  "palmer": false
+ },
+ {
+  "title": "Banana Bread",
+  "servings": "1 loaf (10 slices)",
+  "time": "1 hr 15 min",
+  "intro": "",
+  "sections": [
+   {
+    "kind": "ingredients",
+    "heading": "Ingredients",
+    "items": [
+     {
+      "text": "3 very ripe bananas, mashed (about 1¼ cups)"
+     },
+     {
+      "text": "75 g butter, melted"
+     },
+     {
+      "text": "¾ cup brown sugar"
+     },
+     {
+      "text": "1 egg"
+     },
+     {
+      "text": "1 tsp vanilla essence"
+     },
+     {
+      "text": "1 tsp baking soda"
+     },
+     {
+      "text": "Pinch of salt"
+     },
+     {
+      "text": "1½ cups plain flour"
+     },
+     {
+      "text": "½ cup chocolate chips or chopped walnuts (optional)"
+     }
+    ]
+   },
+   {
+    "kind": "steps",
+    "heading": "Method",
+    "items": [
+     {
+      "text": "Preheat oven to 175°C bake. Grease and line a loaf tin (about 22 × 12cm)."
+     },
+     {
+      "text": "Mix the mashed banana and melted butter in a large bowl."
+     },
+     {
+      "text": "Stir in the brown sugar, egg and vanilla."
+     },
+     {
+      "text": "Sprinkle over the baking soda and salt, then add the flour and fold until just combined. Fold in the chocolate chips or walnuts, if using."
+     },
+     {
+      "text": "Pour into the tin and bake for 55–65 minutes, until a skewer in the centre comes out clean. Cover loosely with foil for the last 15 minutes if it's browning too fast."
+     },
+     {
+      "text": "Cool in the tin for 10 minutes, then turn out onto a wire rack."
+     }
+    ]
+   },
+   {
+    "kind": "notes",
+    "heading": "Notes",
+    "items": [
+     {
+      "text": "In line with Chelsea's one-bowl banana loaf. The spottier the bananas, the sweeter and moister the loaf. Freeze overripe bananas in their skins and thaw them for this. Slices freeze well — toast them straight from frozen."
+     }
+    ]
+   }
+  ],
+  "id": "Baking-Banana_Bread",
+  "file": "Baking/Banana_Bread.tex",
+  "chapter": "baking",
+  "chapterName": "Baking & Breads",
+  "group": null,
+  "ingredients": [
+   "3 very ripe bananas, mashed (about 1¼ cups)",
+   "75 g butter, melted",
+   "¾ cup brown sugar",
+   "1 egg",
+   "1 tsp vanilla essence",
+   "1 tsp baking soda",
+   "Pinch of salt",
+   "1½ cups plain flour",
+   "½ cup chocolate chips or chopped walnuts (optional)"
+  ],
+  "shop": [
+   {
+    "key": "banana",
+    "name": "Bananas",
+    "aisle": "Fruit & veg",
+    "qty": 3.0,
+    "unit": "",
+    "optional": false,
+    "raw": "3 very ripe bananas, mashed (about 1¼ cups)",
+    "g": 360.0
+   },
+   {
+    "key": "butter",
+    "name": "Butter",
+    "aisle": "Dairy, eggs & chilled",
+    "qty": 75.0,
+    "unit": "g",
+    "optional": false,
+    "raw": "75 g butter, melted",
+    "g": 75.0
+   },
+   {
+    "key": "brown-sugar",
+    "name": "Brown sugar",
+    "aisle": "Baking",
+    "qty": 0.75,
+    "unit": "cup",
+    "optional": false,
+    "raw": "¾ cup brown sugar",
+    "g": 150.0
+   },
+   {
+    "key": "eggs",
+    "name": "Eggs",
+    "aisle": "Dairy, eggs & chilled",
+    "qty": 1.0,
+    "unit": "",
+    "optional": false,
+    "raw": "1 egg",
+    "g": 55.0
+   },
+   {
+    "key": "vanilla",
+    "name": "Vanilla essence",
+    "aisle": "Baking",
+    "qty": 1.0,
+    "unit": "tsp",
+    "optional": false,
+    "raw": "1 tsp vanilla essence",
+    "g": 5.0
+   },
+   {
+    "key": "baking-soda",
+    "name": "Baking soda",
+    "aisle": "Baking",
+    "qty": 1.0,
+    "unit": "tsp",
+    "optional": false,
+    "raw": "1 tsp baking soda",
+    "g": 5.0
+   },
+   {
+    "key": "salt",
+    "name": "Salt",
+    "aisle": "Pantry: check first",
+    "qty": null,
+    "unit": "",
+    "optional": false,
+    "raw": "Pinch of salt"
+   },
+   {
+    "key": "flour",
+    "name": "Plain flour",
+    "aisle": "Baking",
+    "qty": 1.5,
+    "unit": "cup",
+    "optional": false,
+    "raw": "1½ cups plain flour",
+    "g": 210.0
+   },
+   {
+    "key": "choc-chips",
+    "name": "Chocolate chips",
+    "aisle": "Baking",
+    "qty": 0.5,
+    "unit": "cup",
+    "optional": true,
+    "raw": "½ cup chocolate chips or chopped walnuts (optional)",
+    "g": 85.0
+   }
+  ],
+  "tags": [],
+  "nutrition": {
+   "kcal": 230,
+   "protein": 3,
+   "carbs": 38,
+   "fat": 7,
+   "per": "slice",
+   "count": 10
+  },
+  "diet": [
+   "freezes",
+   "vegetarian"
+  ],
+  "storage": [
+   "Freeze overripe bananas in their skins and thaw them for this.",
+   "Slices freeze well — toast them straight from frozen."
+  ],
+  "minutes": 75,
+  "ahead": [],
+  "meat": null,
+  "palmer": false
+ },
+ {
+  "title": "Burrito Bowls",
+  "servings": "2–3",
+  "time": "30 min",
+  "intro": "",
+  "sections": [
+   {
+    "kind": "ingredients",
+    "heading": "Ingredients",
+    "items": [
+     {
+      "text": "2 cups cooked rice (brown or white)"
+     },
+     {
+      "text": "1 can black beans, rinsed"
+     },
+     {
+      "text": "300 g cooked chicken or beef (or roasted veg)"
+     },
+     {
+      "text": "1 cup corn kernels"
+     },
+     {
+      "text": "1 tomato, diced; 1 avocado, sliced"
+     },
+     {
+      "text": "½ cup grated cheese; salsa, lime, coriander"
+     }
+    ]
+   },
+   {
+    "kind": "steps",
+    "heading": "Method",
+    "items": [
+     {
+      "text": "Warm beans, corn, and protein in a pan."
+     },
+     {
+      "text": "Assemble bowls: rice base, then toppings."
+     },
+     {
+      "text": "Finish with salsa, lime juice, and coriander."
+     }
+    ]
+   },
+   {
+    "kind": "text",
+    "heading": null,
+    "text": "**Source:** https://www.bbcgoodfood.com/recipes/chicken-burrito-bowlBBC Good Food – Chicken Burrito Bowl"
+   }
+  ],
+  "id": "Stovetop-Burrito_Bowls",
+  "file": "Stovetop/Burrito_Bowls.tex",
+  "chapter": "stovetop",
+  "chapterName": "Stovetop",
+  "group": null,
+  "ingredients": [
+   "2 cups cooked rice (brown or white)",
+   "1 can black beans, rinsed",
+   "300 g cooked chicken or beef (or roasted veg)",
+   "1 cup corn kernels",
+   "1 tomato, diced; 1 avocado, sliced",
+   "½ cup grated cheese; salsa, lime, coriander"
+  ],
+  "shop": [
+   {
+    "key": "rice",
+    "name": "Rice",
+    "aisle": "Pasta, rice & grains",
+    "qty": 0.75,
+    "unit": "cup",
+    "optional": false,
+    "raw": "2 cups cooked rice (brown or white)",
+    "g": 138.8
+   },
+   {
+    "key": "black-beans",
+    "name": "Black beans",
+    "aisle": "Cans, jars & pulses",
+    "qty": 1.0,
+    "unit": "can",
+    "optional": false,
+    "raw": "1 can black beans, rinsed",
+    "g": 240.0
+   },
+   {
+    "key": "chicken",
+    "name": "Chicken",
+    "aisle": "Meat & fish",
+    "qty": 300.0,
+    "unit": "g",
+    "optional": false,
+    "raw": "300 g cooked chicken or beef (or roasted veg)",
+    "g": 300.0
+   },
+   {
+    "key": "corn",
+    "name": "Corn (frozen or canned)",
+    "aisle": "Frozen",
+    "qty": 1.0,
+    "unit": "cup",
+    "optional": false,
+    "raw": "1 cup corn kernels",
+    "g": 160.0
+   },
+   {
+    "key": "tomato",
+    "name": "Tomatoes",
+    "aisle": "Fruit & veg",
+    "qty": 1.0,
+    "unit": "",
+    "optional": false,
+    "raw": "1 tomato, diced; 1 avocado, sliced",
+    "g": 120.0
+   },
+   {
+    "key": "cheese",
+    "name": "Tasty cheese",
+    "aisle": "Dairy, eggs & chilled",
+    "qty": 0.5,
+    "unit": "cup",
+    "optional": false,
+    "raw": "½ cup grated cheese; salsa, lime, coriander",
+    "g": 50.0
+   }
+  ],
+  "tags": [
+   "beef",
+   "chicken"
+  ],
+  "nutrition": {
+   "kcal": 610,
+   "protein": 44,
+   "carbs": 71,
+   "fat": 14,
+   "per": "serving",
+   "count": 2.5
+  },
+  "diet": [
+   "quick",
+   "leftovers"
+  ],
+  "storage": [],
+  "minutes": 30,
+  "ahead": [],
+  "meat": "Chicken",
+  "palmer": false
+ }
+]
