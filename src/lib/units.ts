@@ -89,6 +89,7 @@ export function niceQuantity(q: number, unit: QuantityUnit): number {
 }
 
 export function formatQuantity(q: number, unit: string): string {
+  if (q === 0) return '';
   const v = Number.isInteger(q) ? String(q) : q.toFixed(2).replace(/0+$/, '').replace(/\.$/, '');
   return `${v} ${unit}`;
 }

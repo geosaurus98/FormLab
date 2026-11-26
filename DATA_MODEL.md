@@ -50,8 +50,8 @@ The schemas are Zod definitions in `src/domain/**`. TypeScript types are inferre
 | `body` | **BodyMeasurement** | Date and time, weightKg, waistCm, other measurements, notes, quality |
 | `targets` | **NutritionTarget** | `effectiveFrom`; history preserved (adherence uses the target in force that day); basis manual or estimator |
 | `preferences` | **UserPreferences** | Units, servings, exclusions, appliances, budgets, goals (**FitnessGoal**), recovery preferences, reminders, energy profile |
-| `importRecords` | **ImportRecord** | Restores and CSV imports, with counts |
-| `meta` | key/value | seedVersion, lastBackupAt, reminder state |
+| `importRecords` | **ImportRecord** | Restores, CSV imports and recipe-book imports, with counts |
+| `meta` | key/value | seedVersion, lastBackupAt, reminder state, recipe-book URL and per-recipe import state |
 
 **DataSource** is embedded on foods, recipes and imports rather than kept as a separate table.
 
@@ -77,6 +77,7 @@ Exercise *─* Equipment
 ## Migrations
 
 - **v2** (training recommendations): adds `recoveryDefaultHours` (48) and `recoveryOverrides` ({}) to preferences. It is a data-only upgrade with no index changes. The same `upgradePreferencesV2()` is used by the Dexie upgrade and by `migrateBackup`, so v1 backups restore correctly. `src/db/migration.test.ts` creates a real v1 database and opens it with the current code.
+- **Optional fields without a migration:** `RecipeVersion.declaredNutrition` (an outside estimate with source and quality) was added as an optional field. Older records and backups simply lack it, so no Dexie version bump was needed. Count units and the `bread-maker` appliance only widened enums.
 - `SCHEMA_VERSION` and `this.version(n)` blocks live in `src/db/db.ts`. For any schema change, add `this.version(n+1).stores({...}).upgrade(tx => …)`. Never edit an existing version block.
 - Backups carry `schemaVersion`. `migrateBackup()` in `src/db/backup.ts` must gain a step for every bump, and backups from a newer version are rejected.
 - Seed data is versioned with `meta.seedVersion`. Seeding only inserts reference data and never overwrites user history.

@@ -1,5 +1,5 @@
 import { db } from './db';
-import { calculateRecipeNutrition, type NutritionLookup, type RecipeNutrition } from '../domain/recipes/nutrition';
+import { calculateRecipeNutrition, servingNutrition, type NutritionLookup, type RecipeNutrition } from '../domain/recipes/nutrition';
 import { contentEquals, contentOf, createVersion, type VersionContent } from '../domain/recipes/versions';
 import { RecipeSchema, RecipeVersionSchema, type CookingSession, type DeclaredNutrition, type Recipe, type RecipeFeedback, type RecipeVersion } from '../domain/recipes/types';
 import { newId } from '../lib/id';
@@ -34,12 +34,8 @@ export async function recipeServingSnapshot(recipeId: string, versionId?: string
  * labelled as such. With neither, the incomplete calculation is logged and flagged.
  */
 export function chooseServingNutrition(nutrition: RecipeNutrition, declared: DeclaredNutrition | null, base: Pick<RecipeServingSnapshot, 'recipeId' | 'recipeVersionId' | 'versionNumber' | 'name'>): RecipeServingSnapshot {
-  const calcOk = nutrition.total.missing.energyKcal === 0 && nutrition.total.missing.proteinG === 0 && nutrition.total.itemCount > 0;
-  if (!calcOk && declared && declared.nutrients.energyKcal != null) {
-    const n = declared.nutrients;
-    return { ...base, perServing: n, incomplete: n.proteinG == null || n.carbsG == null || n.fatG == null, quality: declared.quality, basisNote: 'recipe book estimate' };
-  }
-  return { ...base, perServing: nutrition.perServing, incomplete: !nutrition.complete, quality: 'calculated' };
+  const s = servingNutrition(nutrition, declared);
+  return { ...base, perServing: s.perServing, incomplete: s.incomplete, quality: s.quality, ...(s.basis === 'declared' ? { basisNote: 'recipe book estimate' } : {}) };
 }
 
 export interface RecipeDraft {

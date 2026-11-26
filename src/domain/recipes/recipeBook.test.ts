@@ -158,3 +158,14 @@ describe('water lines', () => {
     expect(parseWaterLine('1½ cups rice, rinsed until the water runs clear')).toBeNull();
   });
 });
+
+describe('amountless lines', () => {
+  it('keeps one optional line with the written text for serving suggestions', () => {
+    const { c } = convert('SlowCooker-Chilli_Con_Carne_Red_Lentils');
+    const serve = c.content.ingredients.filter((i) => i.preparation.startsWith('Rice or baked potatoes'));
+    expect(serve).toHaveLength(1);
+    expect(serve[0]).toMatchObject({ quantity: 0, optional: true });
+    expect(c.content.ingredients.filter((i) => i.preparation === 'Salt and pepper')).toHaveLength(1);
+    expect(c.meta.description.match(/Freezes brilliantly/g)).toHaveLength(1);
+  });
+});

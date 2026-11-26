@@ -88,7 +88,7 @@ export async function importRecipeBook(raw: unknown, opts: { dryRun: boolean; ch
 
       if (action === 'create') {
         const version = RecipeVersionSchema.parse({ ...c.content, id: newId('rv'), recipeId: c.recipeId, versionNumber: 1, parentVersionId: null, branch: 'main', createdAt: now });
-        const rec: Recipe = RecipeSchema.parse({ id: c.recipeId, ...c.meta, source: { kind: 'import', name: RECIPE_BOOK_SOURCE_NAME, reference: c.bookId }, currentVersionId: version.id, favourite: false, archived: false, createdAt: now, updatedAt: now });
+        const rec: Recipe = RecipeSchema.parse({ id: c.recipeId, ...c.meta, source: { kind: 'import', name: RECIPE_BOOK_SOURCE_NAME, reference: c.bookId, ...(c.file ? { note: c.file } : {}) }, currentVersionId: version.id, favourite: false, archived: false, createdAt: now, updatedAt: now });
         await db.recipeVersions.add(version);
         await db.recipes.add(rec);
         await db.meta.put({ key: stateKey(c.recipeId), value: { fingerprint, versionId: version.id } satisfies ImportState });

@@ -114,8 +114,8 @@ export function CookingModePage() {
                   onChange={(on) => setChecked((s) => { const n = new Set(s); if (on) n.add(ri.id); else n.delete(ri.id); return n; })}
                   label={
                     <span className={`text-lg ${checked.has(ri.id) ? 'text-slate-400 line-through' : ''}`}>
-                      <span className="font-semibold tabular-nums">{formatQuantity(ri.quantity, ri.unit)}</span> {lookup.ingredients.get(ri.ingredientId)?.name}
-                      {ri.preparation && <span className="text-slate-500">, {ri.preparation}</span>}
+                      <span className="font-semibold tabular-nums">{formatQuantity(ri.quantity, ri.unit)}</span> {ri.quantity === 0 && ri.preparation ? ri.preparation : lookup.ingredients.get(ri.ingredientId)?.name}
+                      {ri.preparation && ri.quantity !== 0 && <span className="text-slate-500">, {ri.preparation}</span>}
                       {ri.optional && <Badge className="ml-1">optional</Badge>}
                     </span>
                   }

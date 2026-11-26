@@ -20,6 +20,7 @@ import type { VersionContent } from './versions';
 
 export const DEFAULT_RECIPE_BOOK_URL = 'https://raw.githubusercontent.com/geosaurus98/recipe-book/main/planner/recipes.json';
 export const RECIPE_BOOK_SOURCE_NAME = 'Recipe book (geosaurus98/recipe-book)';
+export const RECIPE_BOOK_REPO_URL = 'https://github.com/geosaurus98/recipe-book';
 export const BOOK_ESTIMATE_SOURCE = "Recipe book planner estimate (generic ingredient values, about ±10–15%)";
 
 const ShopItemSchema = z.object({
@@ -396,12 +397,16 @@ function describe(book: BookRecipe): string {
       parts.push(`${s.heading ?? 'Variation'}: ${stripMarkdown(s.text)}`);
     }
   }
-  if (book.storage.length) parts.push(`Storage: ${book.storage.map(stripMarkdown).join(' ')}`);
+  const already = parts.join('\n');
+  const storage = book.storage.map(stripMarkdown).filter((x) => !already.includes(x.replace(/\.$/, '')));
+  if (storage.length) parts.push(`Storage: ${storage.join(' ')}`);
   return parts.join('\n\n');
 }
 
 export interface ConvertedRecipe {
   bookId: string;
+  /** source file in the recipe-book repo, e.g. "SlowCooker/Chilli_Con_Carne_Red_Lentils.tex" */
+  file: string | null;
   recipeId: string;
   meta: { name: string; description: string; cuisine: string; category: string; tags: string[]; dietary: string[] };
   content: VersionContent;
@@ -416,10 +421,17 @@ export function convertBookRecipe(book: BookRecipe, drafts: Map<string, Ingredie
   const recipeId = bookRecipeId(book.id);
   const skippedItems: string[] = [];
   const ingredients: RecipeIngredient[] = [];
+  const amountlessLines = new Set<string>();
   book.shop.forEach((item, i) => {
     if (NOT_INGREDIENTS.has(item.key)) {
       skippedItems.push(item.raw || item.name);
       return;
+    }
+    // One written line with no amount ("Rice, Greek yoghurt, cheese, to serve") becomes one optional
+    // line carrying the original text, not several "to taste" rows.
+    if ((item.qty == null || item.qty <= 0) && item.raw) {
+      if (amountlessLines.has(item.raw)) return;
+      amountlessLines.add(item.raw);
     }
     const draft = resolveIngredient(item, drafts, existing, now);
     const qty = item.qty ?? null;
@@ -430,7 +442,7 @@ export function convertBookRecipe(book: BookRecipe, drafts: Map<string, Ingredie
       ingredientId: draft.ingredient.id,
       quantity: mapped.quantity,
       unit: mapped.unit,
-      preparation: comma >= 0 ? item.raw.slice(comma + 1).trim() : qty == null ? item.raw : '',
+      preparation: qty == null || qty <= 0 ? item.raw : comma >= 0 ? item.raw.slice(comma + 1).trim() : '',
       optional: item.optional || qty == null,
       role: roleFor(item.key, item.aisle)
     });
@@ -465,6 +477,7 @@ export function convertBookRecipe(book: BookRecipe, drafts: Map<string, Ingredie
   const { prepMinutes, cookMinutes } = parseTimes(book);
   return {
     bookId: book.id,
+    file: book.file ?? null,
     recipeId,
     meta: {
       name: stripMarkdown(book.title),

@@ -64,3 +64,45 @@ Validation statuses: kitchen-tested · source-checked · experimental · blocked
 - **Soft score**, starting at 50, where each adjustment adds a reason: protein ≥ minimum (+15), saturated fat above preference (−10), incomplete nutrition (−5), cost (±10), rating ((r−3)×5), eaten in the last 7 days (−20), shared fresh produce with other picks (up to +10), same cuisine already picked (−8), favourite (+5).
 
 The selection is greedy, so overlap and variety update after each pick. `suggestForRemaining` ranks recipes by protein per 100 kcal that fit today's remaining energy.
+
+## Importing from the recipe book
+
+Code: `src/domain/recipes/recipeBook.ts` (pure conversion), `src/db/recipeBookService.ts` (preview and import), `src/features/recipes/RecipeImportPage.tsx` (Recipes → Import).
+
+The [recipe book](https://github.com/geosaurus98/recipe-book) stays the place recipes are written. Its build produces `planner/recipes.json`, which FormLab downloads from `raw.githubusercontent.com` (the address is editable) or reads from an uploaded file.
+
+**Conversion rules**
+
+- Ingredients come from the book's parsed shopping items (standard key, quantity, unit, gram estimate, aisle). Book units are kept, including counts such as jar, scoop and head. Pounds and ounces convert exactly.
+- About 50 book keys map to existing FormLab ingredients (`BOOK_KEY_TO_INGREDIENT`), and a few more map to existing foods (`BOOK_KEY_TO_FOOD`).
+- Other keys become new ingredients (`book_<key>`) with no nutrition link, so FormLab never guesses their nutrition. They are given a grocery category, exclusion tags (seafood, poultry, red meat, brown/green lentils, fish-derived sauces, dairy, liquid) and a recipe role.
+- The book's gram estimates only fill conversions an ingredient lacks: unit weights for count units, density for volume units. Existing values are never overwritten.
+- Water, which the book's shopping list leaves out, is recovered from the ingredient text, so pressure-cooker liquid checks work.
+- A line with no amount ("Rice, Greek yoghurt, grated cheese, to serve") becomes one optional line carrying the original text.
+- Steps keep the book's text, with Markdown removed. Each step's appliance is detected from its wording; "Sauté" counts as pressure cooker only in that chapter. Step timers come from the first duration written in the step, using the lower bound of a range. Nothing is generated.
+- Prep and cook times come from the book's `time` text and `minutes` value.
+- Servings use the book's portion count: a midpoint for ranges like "3–4", or slices for baking.
+- Chapters map to categories: stovetop, pressure, slow and oven are *Main*; the others are Side, Snack, Shake, Dessert, Breakfast, Baking or Bread. Dinner suggestions only consider *Main*.
+- The book's per-portion nutrition is stored on the version as `declaredNutrition`, with quality `estimate` and its source.
+
+**Which nutrition is used** (`servingNutrition`)
+
+FormLab's ingredient calculation is used when energy and protein are fully known. Otherwise the declared estimate is used for display, suggestions and diary logging, and the entry is labelled "recipe book estimate". With neither, the incomplete calculation is used and flagged.
+
+Most imported recipes use the book estimate until foods are added for ingredients such as stock and spice blends. The recipe page shows both figures and lists what is missing.
+
+**Re-importing**
+
+`meta['recipeBook:<recipeId>']` stores a fingerprint of the last imported content and the version it created.
+
+| Situation | Result |
+| --- | --- |
+| New recipe | Created as v1, *experimental* |
+| Unchanged | Nothing happens |
+| Changed, not edited in FormLab | New main version, with a change summary from `diffVersions` |
+| Changed, and edited in FormLab since the last import | New version on the `recipe-book` branch; your version stays current, and you can adopt the book's version in the Lab |
+| Deleted in FormLab | Not re-created |
+
+Recipe metadata (name, description, tags) follows the book. Diary entries keep their snapshots throughout.
+
+After an import you can bulk-mark recipes that are still *experimental* as kitchen-tested, if you've cooked them.

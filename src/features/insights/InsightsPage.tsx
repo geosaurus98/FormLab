@@ -5,7 +5,7 @@ import { Card, CardTitle, PageHeader, Select, Notice, Badge } from '../../compon
 import { Bars, BarsWithLine, InsufficientData, SERIES, shortDate } from '../../components/charts';
 import { useNutritionLookup, usePrefs, useToday } from '../../hooks/data';
 import { Link } from 'react-router-dom';
-import { calculateRecipeNutrition } from '../../domain/recipes/nutrition';
+import { calculateRecipeNutrition, servingNutrition } from '../../domain/recipes/nutrition';
 import { estimateRecipeCost } from '../../domain/recipes/shopping';
 import { formatNZD } from '../../lib/utils';
 import { aggregateDays, averageOf, macroDistribution, recipeUsage, compareGroups, describeCorrelation, kcalAdherence, nutritionDays, pearson, proteinAdherence, sessionsPerWeek, topFoods, weeklyIntakeVsWeight } from '../../domain/insights/insights';
@@ -264,11 +264,11 @@ function RecipeComparison({ entries }: { entries: import('../../domain/nutrition
       .map((r) => {
         const v = vmap.get(r.currentVersionId);
         if (!v) return null;
-        const n = calculateRecipeNutrition(v, lookup);
+        const n = servingNutrition(calculateRecipeNutrition(v, lookup), v.declaredNutrition);
         const cost = estimateRecipeCost(v, lookup.ingredients);
         const kcal = n.perServing.energyKcal;
         const protein = n.perServing.proteinG;
-        return { r, kcal, protein, density: kcal && protein != null ? (protein / kcal) * 100 : null, satFat: n.perServing.satFatG, cost: cost.total > 0 ? cost.perServing : null, costPartial: cost.unpriced.length > 0, complete: n.complete, logged: usage.get(r.id)?.servingsLogged ?? 0 };
+        return { r, kcal, protein, density: kcal && protein != null ? (protein / kcal) * 100 : null, satFat: n.perServing.satFatG, cost: cost.total > 0 ? cost.perServing : null, costPartial: cost.unpriced.length > 0, complete: !n.incomplete, estimate: n.basis === 'declared', logged: usage.get(r.id)?.servingsLogged ?? 0 };
       })
       .filter((x): x is NonNullable<typeof x> => x != null)
       .sort((a, b) => (sort === 'cost' ? (a.cost ?? 1e9) - (b.cost ?? 1e9) : sort === 'kcal' ? (a.kcal ?? 1e9) - (b.kcal ?? 1e9) : (b[sort] ?? -1) - (a[sort] ?? -1)));
@@ -298,7 +298,7 @@ function RecipeComparison({ entries }: { entries: import('../../domain/nutrition
           <tbody>
             {rows.map((x) => (
               <tr key={x.r.id} className="border-t border-slate-100 dark:border-slate-800">
-                <td className="py-1.5 pr-2"><Link to={`/recipes/${x.r.id}`} className="hover:underline">{x.r.name}</Link>{!x.complete && <span className="ml-1 text-amber-600" title="Incomplete nutrition">⚠</span>}</td>
+                <td className="py-1.5 pr-2"><Link to={`/recipes/${x.r.id}`} className="hover:underline">{x.r.name}</Link>{!x.complete && <span className="ml-1 text-amber-600" title="Incomplete nutrition">⚠</span>}{x.estimate && <span className="ml-1 text-[11px] text-slate-400" title="Recipe book estimate">est.</span>}</td>
                 <td className="px-1 text-right">{x.kcal != null ? Math.round(x.kcal) : '?'}</td>
                 <td className="px-1 text-right">{x.protein != null ? `${Math.round(x.protein)} g` : '?'}</td>
                 <td className="px-1 text-right">{x.density != null ? `${x.density.toFixed(1)} g` : '?'}</td>

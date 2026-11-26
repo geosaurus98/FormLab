@@ -1,7 +1,7 @@
 import { db } from './db';
 import { MealPlanSchema, cookingEntries, servingsToCook, type MealPlan, type MealPlanEntry } from '../domain/planner/mealPlan';
 import { buildGroceryItems, GroceryListSchema, estimateRecipeCost, type GroceryItem, type GroceryList } from '../domain/recipes/shopping';
-import { calculateRecipeNutrition } from '../domain/recipes/nutrition';
+import { calculateRecipeNutrition, servingNutrition } from '../domain/recipes/nutrition';
 import { averageRating } from '../domain/recipes/lab';
 import type { RecipeCandidate } from '../domain/planner/recommend';
 import { loadNutritionLookup } from './recipeService';
@@ -80,7 +80,8 @@ export async function recipeCandidates(opts: { categories?: string[] } = {}): Pr
       ...plans.flatMap((p) => p.entries.filter((e) => e.recipeId === recipe.id && e.date && e.date <= today).map((e) => e.date!))
     ].sort();
     const last = dates[dates.length - 1];
-    out.push({ recipe, version, perServing: n.perServing, nutritionComplete: n.complete, costPerServing: cost.total > 0 ? cost.perServing : null, costUnpriced: cost.unpriced, rating: rating?.mean ?? null, daysSinceLast: last ? daysBetween(last, today) : null });
+    const sn = servingNutrition(n, version.declaredNutrition);
+    out.push({ recipe, version, perServing: sn.perServing, nutritionComplete: !sn.incomplete, costPerServing: cost.total > 0 ? cost.perServing : null, costUnpriced: cost.unpriced, rating: rating?.mean ?? null, daysSinceLast: last ? daysBetween(last, today) : null });
   }
   return out;
 }
